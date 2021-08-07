@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/blog?useSSL=false&serverTimezone=UTC
+    username: root
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+blog:
+  settings:
+    title: DevPub
+    subtitle: Рассказы разработчиков
+    prohe: +7 903 666-44-55
+    email: mail@mail.ru
+    copryright: Дмитрий Сергеев
+    copyrightFrom: 2005
