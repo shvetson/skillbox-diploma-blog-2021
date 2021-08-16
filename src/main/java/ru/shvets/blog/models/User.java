@@ -9,13 +9,14 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private long id;
 
     @Column(name = "is_moderator", nullable = false)
@@ -24,19 +25,18 @@ public class User implements Serializable {
     @Column(name = "reg_time", nullable = false)
     private Date regTime;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "code")
     private String code;
 
-    @Column(name = "photo", columnDefinition = "text")
+    @Column(columnDefinition = "text")
     private String photo;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")

@@ -1,0 +1,81 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210815-ins-#1
+      author: oleg.shvets
+      comment: "insert data"
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: is_moderator
+                  value: 0
+              - column:
+                  name: name
+                  value: "Andrey Vasiliev"
+              - column:
+                  name: email
+                  value: "andrey.vasiliev@gmail.com"
+              - column:
+                  name: password
+                  value: "12345"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: is_moderator
+                  value: 0
+              - column:
+                  name: name
+                  value: "Maxim Durov"
+              - column:
+                  name: email
+                  value: "maxim.durov@mail.ru"
+              - column:
+                  name: password
+                  value: "67890"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: is_moderator
+                  value: 0
+              - column:
+                  name: name
+                  value: "Alex Petrov"
+              - column:
+                  name: email
+                  value: "alex.petrov@mail.ru"
+              - column:
+                  name: password
+                  value: "13579"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: is_moderator
+                  value: 0
+              - column:
+                  name: name
+                  value: "Oleg Kuznetsov"
+              - column:
+                  name: email
+                  value: "oleg.kuztesov@yandex.ru"
+              - column:
+                  name: password
+                  value: "24680"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: is_moderator
+                  value: 0
+              - column:
+                  name: name
+                  value: "Nikolay Ivanov"
+              - column:
+                  name: email
+                  value: "nikolay.ivanov@pochta.ru"
+              - column:
+                  name: password
+                  value: "00000"

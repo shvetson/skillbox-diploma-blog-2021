@@ -8,14 +8,15 @@ import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name="post_votes")
 public class PostVote implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private long id;
 
     @Column(name = "user_id", nullable = false)
@@ -24,9 +25,9 @@ public class PostVote implements Serializable {
     @Column(name = "post_id", nullable = false)
     private long postId;
 
-    @Column(name="time", nullable = false)
+    @Column(nullable = false)
     private Date time;
 
-    @Column(name = "value", nullable = false)
+    @Column(nullable = false)
     private byte value;
 }

@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210816-ins-#5
+      author: oleg.shvets
+      comment: "insert data"
+      changes:
+        - insert:
+            tableName: post_comments
+            columns:
+              - column:
+                  name: post_id
+                  value: 1
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: text
+                  value: "Так то уже есть https://github.com/antirez/linenoise и https://github.com/argtable/argtable3"
+        - insert:
+            tableName: post_comments
+            columns:
+              -  column:
+                   name: parent_id
+                   value: 1
+              - column:
+                  name: post_id
+                  value: 1
+              - column:
+                  name: user_id
+                  value: 3
+              - column:
+                  name: text
+                  value: "Ух, большое спасибо за ссылки, не попадались мне при поиске. Отличный источник хороших идей"
+        - insert:
+            tableName: post_comments
+            columns:
+              - column:
+                  name: post_id
+                  value: 1
+              - column:
+                  name: user_id
+                  value: 4
+              - column:
+                  name: text
+                  value: "А как же microrl? Десять лет назад уже так-то пост был =)"
+        - insert:
+            tableName: post_comments
+            columns:
+              - column:
+                  name: post_id
+                  value: 3
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: text
+                  value: "А при создании скольких приложений с применением DDD вы участвовали в качестве разработчика?"
+        - insert:
+            tableName: post_comments
+            columns:
+              - column:
+                  name: parent_id
+                  value: 4
+              - column:
+                  name: post_id
+                  value: 3
+              - column:
+                  name: user_id
+                  value: 4
+              - column:
+                  name: text
+                  value: "Самый большой и основной опыт я получил в Додо (не знаю как переложить на приложения), до этого те или иные паттерны тоже использовал."

@@ -8,19 +8,20 @@ import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name="captcha_codes")
 public class CaptchaCode implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private long id;
 
-    @Column(name="time", nullable = false)
+    @Column(nullable = false)
     private Date time;
 
-    @Column(name = "code", nullable = false, columnDefinition = "tinytext")
+    @Column(nullable = false, columnDefinition = "tinytext")
     private String code;
 
     @Column(name = "secret_code", nullable = false,  columnDefinition = "tinytext")

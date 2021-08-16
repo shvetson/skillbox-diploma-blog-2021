@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210815-5
+      author: oleg.shvets
+      comment: "init DB"
+      changes:
+        - createTable:
+            tableName: tag2post
+            remarks: "Связи тэгов с постами"
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  remarks: "ID связи"
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: tag2post_pk
+              - column:
+                  name: post_id
+                  type: INT
+                  remarks: "ID поста"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tag_id
+                  type: INT
+                  remarks: "ID тэга"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: tag2post
+            baseColumnNames: post_id
+            referencedTableName: posts
+            referencedColumnNames: id
+            constraintName: tag2post_posts_fk
+        - addForeignKeyConstraint:
+            baseTableName: tag2post
+            baseColumnNames: tag_id
+            referencedTableName: tags
+            referencedColumnNames: id
+            constraintName: tag2post_tags_fk2

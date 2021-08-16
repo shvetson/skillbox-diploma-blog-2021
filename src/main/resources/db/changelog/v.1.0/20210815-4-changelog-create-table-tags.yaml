@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210815-4
+      author: oleg.shvets
+      comment: "init DB"
+      changes:
+        - createTable:
+            tableName: tags
+            remarks: "Тэги"
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  remarks: "ID тэга"
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: tags_pk
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  remarks: "Текст тэга"
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: tags_uq
+                    nullable: false

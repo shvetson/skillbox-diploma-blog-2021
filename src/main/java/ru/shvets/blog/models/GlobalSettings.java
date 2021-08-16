@@ -7,21 +7,22 @@ import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "global_settings")
 public class GlobalSettings implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private long id;
 
-    @Column(name = "code", nullable = false)
+    @Column(nullable = false, unique = true)
     private String code;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "value", nullable = false)
+    @Column(nullable = false)
     private String value;
 }

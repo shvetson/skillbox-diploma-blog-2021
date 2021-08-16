@@ -1,0 +1,80 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210815-2
+      author: oleg.shvets
+      comment: "init DB"
+      changes:
+        - createTable:
+            tableName: posts
+            remarks: "Посты"
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  remarks: "ID поста"
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: posts_pk
+              - column:
+                  name: is_active
+                  type: TINYINT
+                  remarks: "Скрыта или активна публикация: 0 или 1"
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: moderation_status
+                  type: ENUM("NEW", "ACCEPTED", "DECLINED")
+                  remarks: "Статус модерации"
+                  defaultValue: "NEW"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: moderator_id
+                  type: INT
+                  remarks: "ID пользователя-модератора, принявшего решение"
+              - column:
+                  name: user_id
+                  type: INT
+                  remarks: "Автор поста"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: time
+                  type: DATETIME
+                  remarks: "Дата и время публикации поста"
+                  defaultValue: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  remarks: "Заголовок поста"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: text
+                  type: TEXT
+                  remarks: "Текст поста"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: view_count
+                  type: INT
+                  remarks: "Количество просмотров поста"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: posts
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: posts_users_fk
+        - addForeignKeyConstraint:
+            baseTableName: posts
+            baseColumnNames: moderator_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: posts_users_fk2

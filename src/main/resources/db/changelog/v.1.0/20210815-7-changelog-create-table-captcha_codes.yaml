@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210815-7
+      author: oleg.shvets
+      comment: "init DB"
+      changes:
+        - createTable:
+            tableName: captcha_codes
+            remarks: "Коды капч"
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  remarks: "ID каптча"
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: captcha_codes_pk
+              - column:
+                  name: time
+                  type: DATETIME
+                  remarks: "Дата и время генерации кода капчи"
+                  defaultValue: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: code
+                  type: TINYTEXT
+                  remarks: "Код, отображаемый на картинке капчи"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: secret_code
+                  type: TINYTEXT
+                  remarks: "Код, передаваемый в параметре"
+                  constraints:
+                    nullable: false

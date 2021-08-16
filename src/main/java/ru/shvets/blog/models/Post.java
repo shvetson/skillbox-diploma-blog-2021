@@ -9,13 +9,14 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "posts")
 public class Post implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private long id;
 
     @Column(name = "is_active", nullable = false)
@@ -34,13 +35,13 @@ public class Post implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "time", nullable = false)
+    @Column(nullable = false)
     private Date time;
 
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(name = "text", nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     private String text;
 
     @Column(name = "view_count", nullable = false)

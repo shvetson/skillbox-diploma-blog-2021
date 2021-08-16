@@ -8,13 +8,14 @@ import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name="post_comments")
 public class PostComment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id", nullable = false)
+    @Column(nullable = false)
     private long id;
 
     @OneToOne
@@ -27,9 +28,9 @@ public class PostComment implements Serializable {
     @Column(name="user_id", nullable = false)
     private long userId;
 
-    @Column(name="time", nullable = false)
+    @Column(nullable = false)
     private Date time;
 
-    @Column(name = "text", nullable = false, columnDefinition = "text")
+    @Column(nullable = false, columnDefinition = "text")
     private String text;
 }

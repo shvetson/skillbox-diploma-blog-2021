@@ -1,0 +1,65 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210815-1
+      author: oleg.shvets
+      comment: "init DB"
+      changes:
+        - createTable:
+            tableName: users
+            remarks: Пользователи
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  remarks: "ID пользователя"
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: users_pk
+              - column:
+                  name: is_moderator
+                  type: TINYINT
+                  remarks: "Является ли пользователь модератором"
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reg_time
+                  type: DATETIME
+                  remarks: "Дата и время регистрации пользователя"
+                  defaultValue: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  remarks: "Имя пользователя"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  remarks: "E-mail пользователя"
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: users_email_uq
+                    nullable: false
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  remarks: "Хэш пароля пользователя"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: code
+                  type: VARCHAR(255)
+                  remarks: "Код для восстановления пароля"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: photo
+                  type: TEXT
+                  remarks: "Фотография (ссылка на файл)"
+                  constraints:
+                    nullable: true

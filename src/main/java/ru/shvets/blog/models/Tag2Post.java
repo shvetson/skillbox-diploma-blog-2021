@@ -7,14 +7,15 @@ import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name="tag2post")
 public class Tag2Post implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id", nullable = false)
-    private long tag2PostId;
+    @Column(nullable = false)
+    private long id;
 
     @Column(name="post_id", nullable = false)
     private long postId;

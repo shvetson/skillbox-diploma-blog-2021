@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210815-8
+      author: oleg.shvets
+      comment: "init DB"
+      changes:
+        - createTable:
+            tableName: global_settings
+            remarks: "Глобальные настройки движка"
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  remarks: "ID настройки"
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: global_settings_pk
+              - column:
+                  name: code
+                  type: VARCHAR(255)
+                  remarks: "Системное имя настройки"
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: global_settings_uq
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  remarks: "Название настройки"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  type: VARCHAR(255)
+                  remarks: "Значение настройки"
+                  constraints:
+                    nullable: false

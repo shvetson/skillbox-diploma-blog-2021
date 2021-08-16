@@ -1,0 +1,78 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210816-ins-#4
+      author: oleg.shvets
+      comment: "insert data"
+      changes:
+        - insert:
+            tableName: tag2post
+            columns:
+              - column:
+                  name: post_id
+                  value: 1
+              - column:
+                  name: tag_id
+                  value: 1
+        - insert:
+            tableName: tag2post
+            columns:
+              - column:
+                  name: post_id
+                  value: 1
+              - column:
+                  name: tag_id
+                  value: 4
+        - insert:
+            tableName: tag2post
+            columns:
+              - column:
+                  name: post_id
+                  value: 2
+              - column:
+                  name: tag_id
+                  value: 1
+        - insert:
+            tableName: tag2post
+            columns:
+              - column:
+                  name: post_id
+                  value: 2
+              - column:
+                  name: tag_id
+                  value: 2
+        - insert:
+            tableName: tag2post
+            columns:
+              - column:
+                  name: post_id
+                  value: 2
+              - column:
+                  name: tag_id
+                  value: 5
+        - insert:
+            tableName: tag2post
+            columns:
+              - column:
+                  name: post_id
+                  value: 2
+              - column:
+                  name: tag_id
+                  value: 9
+        - insert:
+            tableName: tag2post
+            columns:
+              - column:
+                  name: post_id
+                  value: 3
+              - column:
+                  name: tag_id
+                  value: 1
+        - insert:
+            tableName: tag2post
+            columns:
+              - column:
+                  name: post_id
+                  value: 3
+              - column:
+                  name: tag_id
+                  value: 6

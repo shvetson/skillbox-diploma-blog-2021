@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210816-ins-#3
+      author: oleg.shvets
+      comment: "insert data"
+      changes:
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "Программирование"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "Базы данных"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "Управление проектами"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "Программирование микроконтролеров"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "Облачные сервисы"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "Python"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "Java"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "Oracle"
+        - insert:
+            tableName: tags
+            columns:
+              - column:
+                  name: name
+                  value: "VMware"

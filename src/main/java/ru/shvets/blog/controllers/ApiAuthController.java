@@ -1,16 +1,15 @@
 package ru.shvets.blog.controllers;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/api/auth")
 public class ApiAuthController {
 
-    @GetMapping("/index")
-    public String auth(Model model){
+    @GetMapping("/check")
+    public String auth(){
         return null;
     }
 }

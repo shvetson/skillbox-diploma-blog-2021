@@ -1,0 +1,66 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210815-6
+      author: oleg.shvets
+      comment: "init DB"
+      changes:
+        - createTable:
+            tableName: post_comments
+            remarks: "Комментарии к постам"
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  remarks: "ID комментария"
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: post_comments_pk
+              - column:
+                  name: parent_id
+                  type: INT
+                  remarks: "Комментарий, на который оставлен этот комментарий"
+              - column:
+                  name: post_id
+                  type: INT
+                  remarks: "Пост, к которому написан комментарий"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: INT
+                  remarks: "Автор комментария"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: time
+                  type: DATETIME
+                  remarks: "Дата и время комментария"
+                  defaultValue: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: text
+                  type: TEXT
+                  remarks: "Текст комментария"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: post_comments
+            baseColumnNames: post_id
+            referencedTableName: posts
+            referencedColumnNames: id
+            constraintName: post_comments_posts_fk
+        - addForeignKeyConstraint:
+            baseTableName: post_comments
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: post_comments_users_fk2
+        - addForeignKeyConstraint:
+            baseTableName: post_comments
+            baseColumnNames: parent_id
+            referencedTableName: post_comments
+            referencedColumnNames: id
+            constraintName: post_comments_fk3
