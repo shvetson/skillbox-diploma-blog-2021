@@ -21,10 +21,10 @@ databaseChangeLog:
                   value: "Пишем терминальный сервер для микроконтроллера на С"
               - column:
                   name: text
-                  value: "Всем привет! В процессе работы над гексаподом AIWM я все чаще задумывался о каком-нибудь удобном интерфейсе для общения с ним. ..."
+                  value: "Всем привет! В процессе работы над гексаподом AIWM я все чаще задумывался о каком-нибудь удобном интерфейсе для общения с ним."
               - column:
                   name: view_count
-                  value: 15
+                  value: 0
         - insert:
             tableName: posts
             columns:
@@ -33,7 +33,10 @@ databaseChangeLog:
                   value: 1
               - column:
                   name: moderation_status
-                  value: NEW
+                  value: ACCEPTED
+              - column:
+                  name: moderator_id
+                  value: 1
               - column:
                   name: user_id
                   value: 2
@@ -42,7 +45,7 @@ databaseChangeLog:
                   value: "Мониторинг СУБД VMware Cloud Director и vCenter Server Appliance с помощью Zabbix"
               - column:
                   name: text
-                  value: "Привет, Хабр! На связи Александр Воронцов, технический специалист компании Cloud4Y. Сегодня я расскажу, как можно настроить получение в Zabbix метрик СУБД PostgreSQL, используемой в VMware Cloud Director и vCenter Server Appliance. ..."
+                  value: "Привет, Хабр! На связи Александр Воронцов, технический специалист компании Cloud4Y. Сегодня я расскажу, как можно настроить получение в Zabbix метрик СУБД PostgreSQL, используемой в VMware Cloud Director и vCenter Server Appliance."
               - column:
                   name: view_count
                   value: 5
@@ -66,7 +69,7 @@ databaseChangeLog:
                   value: "Как устроен Domain-Driven Design"
               - column:
                   name: text
-                  value: "Многие проекты на Django начинаются просто: есть база данных и к приложению, которое крутится на сервере, идут обращения. Например, так начиналась Dodo IS (информационная система компании Додо Пицца, где работал автор сегодняшней статьи). ..."
+                  value: "Многие проекты на Django начинаются просто: есть база данных и к приложению, которое крутится на сервере, идут обращения. Например, так начиналась Dodo IS (информационная система компании Додо Пицца, где работал автор сегодняшней статьи)."
               - column:
                   name: view_count
                   value: 3

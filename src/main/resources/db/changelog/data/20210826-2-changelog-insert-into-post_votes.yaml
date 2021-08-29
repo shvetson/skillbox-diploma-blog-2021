@@ -1,0 +1,198 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210826-ins-#2
+      author: oleg.shvets
+      comment: "insert data"
+      changes:
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: post_id
+                  value: 4
+              - column:
+                  name: value
+                  value: 1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: post_id
+                  value: 4
+              - column:
+                  name: value
+                  value: 1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 4
+              - column:
+                  name: post_id
+                  value: 4
+              - column:
+                  name: value
+                  value: -1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 5
+              - column:
+                  name: post_id
+                  value: 4
+              - column:
+                  name: value
+                  value: 1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: post_id
+                  value: 5
+              - column:
+                  name: value
+                  value: 1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: post_id
+                  value: 5
+              - column:
+                  name: value
+                  value: -1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 3
+              - column:
+                  name: post_id
+                  value: 5
+              - column:
+                  name: value
+                  value: 1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 4
+              - column:
+                  name: post_id
+                  value: 5
+              - column:
+                  name: value
+                  value: -1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: post_id
+                  value: 6
+              - column:
+                  name: value
+                  value: 1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 3
+              - column:
+                  name: post_id
+                  value: 6
+              - column:
+                  name: value
+                  value: 1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 4
+              - column:
+                  name: post_id
+                  value: 6
+              - column:
+                  name: value
+                  value: -1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 5
+              - column:
+                  name: post_id
+                  value: 6
+              - column:
+                  name: value
+                  value: -1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: post_id
+                  value: 8
+              - column:
+                  name: value
+                  value: -1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: post_id
+                  value: 8
+              - column:
+                  name: value
+                  value: -1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 3
+              - column:
+                  name: post_id
+                  value: 8
+              - column:
+                  name: value
+                  value: 1
+        - insert:
+            tableName: post_votes
+            columns:
+              - column:
+                  name: user_id
+                  value: 4
+              - column:
+                  name: post_id
+                  value: 8
+              - column:
+                  name: value
+                  value: 1

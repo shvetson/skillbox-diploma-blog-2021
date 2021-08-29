@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "global_settings")
 public class GlobalSettings implements Serializable {
     @Id

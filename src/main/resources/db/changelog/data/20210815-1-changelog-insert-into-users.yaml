@@ -9,7 +9,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: is_moderator
-                  value: 0
+                  value: 1
               - column:
                   name: name
                   value: "Andrey Vasiliev"
@@ -19,6 +19,9 @@ databaseChangeLog:
               - column:
                   name: password
                   value: "12345"
+              - column:
+                  name: photo
+                  value: "c:\\photos\\users\\andrey_vasiliev.jpg"
         - insert:
             tableName: users
             columns:
@@ -34,6 +37,9 @@ databaseChangeLog:
               - column:
                   name: password
                   value: "67890"
+              - column:
+                  name: photo
+                  value: "c:\\photos\\users\\maxim_durov.jpg"
         - insert:
             tableName: users
             columns:
@@ -49,6 +55,9 @@ databaseChangeLog:
               - column:
                   name: password
                   value: "13579"
+              - column:
+                  name: photo
+                  value: "c:\\photos\\users\\alex_petrov.jpg"
         - insert:
             tableName: users
             columns:
@@ -64,6 +73,9 @@ databaseChangeLog:
               - column:
                   name: password
                   value: "24680"
+              - column:
+                  name: photo
+                  value: "c:\\photos\\users\\oleg_kuznetsov.jpg"
         - insert:
             tableName: users
             columns:
@@ -79,3 +91,6 @@ databaseChangeLog:
               - column:
                   name: password
                   value: "00000"
+              - column:
+                  name: photo
+                  value: "c:\\photos\\users\\nikolay_ivanov.jpg"

@@ -2,8 +2,8 @@ package ru.shvets.blog.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.shvets.blog.models.GlobalSettings;
+import ru.shvets.blog.models.User;
 
 @Repository
-public interface SettingsRepository extends JpaRepository<GlobalSettings, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 }

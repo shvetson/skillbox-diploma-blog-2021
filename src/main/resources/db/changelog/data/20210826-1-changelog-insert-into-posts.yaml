@@ -1,0 +1,165 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20210826-ins-#1
+      author: oleg.shvets
+      comment: "insert data"
+      changes:
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: is_active
+                  value: 1
+              - column:
+                  name: moderation_status
+                  value: ACCEPTED
+              - column:
+                  name: moderator_id
+                  value: 1
+              - column:
+                  name: user_id
+                  value: 3
+              - column:
+                  name: title
+                  value: "Microsoft должна открыть SQL Server"
+              - column:
+                  name: text
+                  value: "Бывший сотрудник Microsoft Стивен Уолли (Stephen Walli) покинул компанию около двух лет назад, чтобы основать собственный стартап (он пока не говорит, какой именно). В Microsoft он работал менеджером (Product Unit Manager) в подразделении Interix, а до этого он основал стартап Softway Systems, который разрабатывал Interix-среду для портирования UNIX-программ под Windows NT. Компания Microsoft купила Softway Systems в 1999 г., и Стивен Уолли работал там около пяти лет, а потом перешел на должность вице-президента по развитию стратегии open source в компанию Optaros."
+              - column:
+                  name: view_count
+                  value: 5
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: is_active
+                  value: 1
+              - column:
+                  name: moderation_status
+                  value: ACCEPTED
+              - column:
+                  name: moderator_id
+                  value: 1
+              - column:
+                  name: user_id
+                  value: 5
+              - column:
+                  name: title
+                  value: "Microsoft откроет исходники СУБД FoxPro"
+              - column:
+                  name: text
+                  value: "Microsoft опубликует исходный код ключевых компонентов Visual FoxPro. В то же время компания не будет продолжать разработку легендарной СУБД после версии 9.0."
+              - column:
+                  name: view_count
+                  value: 10
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: is_active
+                  value: 1
+              - column:
+                  name: moderation_status
+                  value: ACCEPTED
+              - column:
+                  name: moderator_id
+                  value: 1
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: title
+                  value: "Windows Mobile 6 распознаёт речь: видео от разработчиков"
+              - column:
+                  name: text
+                  value: "Благодаря сообщению в видеоблоге Channel 9 мы можем подробно изучить самые интересные фичи в новой ОС для мобильных устройств Windows Mobile 6.0. Cмартфоны и коммуникаторы с ней обязательно появятся в продаже очень скоро (хотя задержка налицо). С точки зрения разработчиков одним из самых замечательных нововведений является внедрение .NET CF 2.0, и SQL Server Compact Edition 2.0 во встроенную память (ROM). Это значит, что вы теперь можете создавать программы, не заботясь о запуске окружения."
+              - column:
+                  name: view_count
+                  value: 20
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: is_active
+                  value: 0
+              - column:
+                  name: moderation_status
+                  value: NEW
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: title
+                  value: "В SQL Server 2008 частично внедрят WinFS"
+              - column:
+                  name: text
+                  value: "Следующая версия SQL Server под кодовым названием Katmai, скорее всего, будет опубликована в июне 2007 года в виде технологического превью (CTP). Финальный релиз ожидается в следующем году. Поможет ли новая разработка вернуть компании Microsoft вернуть долю рынка, которую она потеряла в последние годы?"
+              - column:
+                  name: view_count
+                  value: 0
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: is_active
+                  value: 1
+              - column:
+                  name: moderation_status
+                  value: ACCEPTED
+              - column:
+                  name: moderator_id
+                  value: 1
+              - column:
+                  name: user_id
+                  value: 5
+              - column:
+                  name: title
+                  value: "5 подходов к облачной автоматизации"
+              - column:
+                  name: text
+                  value: "Как не тратить время и нервы на ручную инициализацию и сопровождение облачных ресурсов, и при этом держать под контролем расходы? Ответ – автоматизация. Облачная автоматизация имеет много общего с автоматизацией локальной ИТ-инфраструктуры. Ее можно рассматривать как более современную и более крупную разновидность, с теми же принципами, подходами и концепциями. Но различия все же есть, и о них мы сегодня и расскажем – с помощью ведущих экспертов отрасли."
+              - column:
+                  name: view_count
+                  value: 10
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: is_active
+                  value: 0
+              - column:
+                  name: moderation_status
+                  value: NEW
+              - column:
+                  name: user_id
+                  value: 4
+              - column:
+                  name: title
+                  value: "Как реализовать шаринг в социальные сети"
+              - column:
+                  name: text
+                  value: "Статья про то, как реализовать шаринг в Facebook и ВКонтакте, используя JavaScript. Мы рассказали про собственный опыт, включая все ошибки, которые вы сможете избежать. Наш клиент – застройщик северной столицы Legenda Intelligent Development уже давно работает на рынке недвижимости и в этом году отметил свой юбилей – 10 лет. В честь этого события они устроили конкурс, где любой человек мог выиграть ювелирное украшение по своему индивидуальному эскизу. Для этого нужно было сконфигурировать кольцо, серьги или кулон с элементами, созданными по интерьерным мотивам. Далее пользователь должен расшарить свой дизайн хотя бы в одну из социальных сетей: Facebook и Vkontakte. Потом случайным образом между участниками, выполнившими условия, разыгрывали призы."
+              - column:
+                  name: view_count
+                  value: 0
+        - insert:
+            tableName: posts
+            columns:
+              - column:
+                  name: is_active
+                  value: 0
+              - column:
+                  name: moderation_status
+                  value: NEW
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: title
+                  value: "Мы нанимаем только сеньоров"
+              - column:
+                  name: text
+                  value: "В наши дни одна из самых больших проблем для IT специалиста - начать профессиональную карьеру. Многие из нас прошли путь первого трудоустройства и не знаю как вы, а мне довелось услышать такую фразу от рекрутера: вот когда ты будешь сеньор с зарплатой от $1000 тогда и приходи."
+              - column:
+                  name: view_count
+                  value: 0
