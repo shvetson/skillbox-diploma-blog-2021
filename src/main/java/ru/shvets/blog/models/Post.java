@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,15 +54,21 @@ public class Post implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tagList;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "post_votes",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> userListVotes;
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "post_votes",
+//            joinColumns = @JoinColumn(name = "post_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id"))
+//    private List<User> userListVotes;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "post_comments",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> userListComments;
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    List<PostVote> listVotes = new ArrayList<>();
+
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "post_comments",
+//            joinColumns = @JoinColumn(name = "post_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id"))
+//    private List<User> userListComments;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    List<PostComment> listComments = new ArrayList<>();
 }

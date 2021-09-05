@@ -1,72 +1,125 @@
 package ru.shvets.blog.services;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.shvets.blog.api.responses.PostInResponse;
 import ru.shvets.blog.api.responses.PostResponse;
 import ru.shvets.blog.models.ModerationStatus;
+import ru.shvets.blog.models.Post;
 import ru.shvets.blog.models.User;
-import ru.shvets.blog.repositories.PostCommentRepository;
 import ru.shvets.blog.repositories.PostRepository;
-import ru.shvets.blog.repositories.PostVoteRepository;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final PostVoteRepository postVoteRepository;
-    private final PostCommentRepository postCommentRepository;
 
-    public int count() {
-        return postRepository.countFindByIsActiveAndModerationStatus((byte) 1, ModerationStatus.ACCEPTED);
+    public List<PostResponse> prepare(List<Post> list) {
+        List<PostResponse> response = new ArrayList<>();
+        list.forEach(post -> {
+            response.add(new PostResponse(
+                    post.getId(),
+                    post.getTime().getTime() / 1000,
+                    new User(post.getUser().getId(), post.getUser().getName()),
+                    post.getTitle(),
+                    post.getText().substring(0, Math.min(post.getText().length(), 150)).concat(" ..."),
+                    (int) post.getListVotes().stream().filter(a -> a.getValue() == 1).count(),
+                    (int) post.getListVotes().stream().filter(a -> a.getValue() == -1).count(),
+                    post.getListComments().size(),
+                    post.getViewCount())
+            );
+        });
+        return response;
     }
 
-    public List<PostInResponse> getAll(int offset, int limit, String mode) {
-        List<PostInResponse> postInResponse = new ArrayList<>();
-        postRepository.findByIsActiveAndModerationStatus((byte) 1, ModerationStatus.ACCEPTED).
-                forEach(post -> {
-                    postInResponse.add(new PostInResponse(post.getId(),
-                            post.getTime().getTime() / 1000,
-                            new User(post.getUser().getId(), post.getUser().getName()),
-                            post.getTitle(),
-                            post.getText().substring(0, Math.min(post.getText().length(), 150)).concat(" ..."),
-                            postVoteRepository.countFindByPostIdAndValue(post.getId(), (byte) 1),
-                            postVoteRepository.countFindByPostIdAndValue(post.getId(), (byte) -1),
-                            postCommentRepository.countFindByPostId(post.getId()),
-                            post.getViewCount())
-                    );
-                });
-
+    public Sort sort(String mode) {
         switch (mode) {
             case "popular":
-                return postInResponse.stream().
-                        skip(offset).limit(limit).
-                        sorted(Comparator.comparingInt(PostInResponse::getCommentCount).reversed()).
-                        collect(Collectors.toList());
+                return Sort.by("comments").descending();
             case "best":
-                return postInResponse.stream().
-                        skip(offset).limit(limit).
-                        sorted(Comparator.comparingInt(PostInResponse::getLikeCount).reversed()).
-                        collect(Collectors.toList());
+                return Sort.by("votes").descending();
             case "early":
-                return postInResponse.stream().
-                        skip(offset).limit(limit).
-                        sorted(Comparator.comparingLong(PostInResponse::getTimestamp)).
-                        collect(Collectors.toList());
+                return Sort.by("time");
             default:
-                return postInResponse.stream().
-                        skip(offset).limit(limit).
-                        sorted(Comparator.comparingLong(PostInResponse::getTimestamp).reversed()).
-                        collect(Collectors.toList());
+                return Sort.by("time").descending();
         }
     }
 
-    public PostResponse getAllPosts(int offset, int limit, String mode) {
-        return new PostResponse(count(), getAll(offset, limit, mode));
+    public Map<String, Object> response(Page<Post> page) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("posts", (page != null) ? prepare(page.toList()) : new PostResponse[]{});
+        response.put("count", (page != null) ? page.getTotalElements() : 0);
+        return response;
+    }
+
+    public Map<String, Object> getAllPosts(int offset, int limit, String mode) {
+        if (mode.equals("popular")) {
+            return response(postRepository.findAllIsActiveAndIsAcceptedAndComments(PageRequest.of(offset, limit, sort(mode))));
+        } else if (mode.equals("best")) {
+            return response(postRepository.findAllIsActiveAndIsAcceptedAndVotes(PageRequest.of(offset, limit, sort(mode))));
+        } else {
+            return response(postRepository.findAllIsActiveAndIsAccepted(PageRequest.of(offset, limit, sort(mode))));
+        }
+    }
+
+    public Map<String, Object> getAllPostsByQuery(int offset, int limit, String query) {
+        return response(postRepository.findByIsActiveAndModerationStatusAndTitleContaining((byte) 1,
+                ModerationStatus.ACCEPTED,
+                query,
+                PageRequest.of(offset, limit, sort("recent"))));
+    }
+
+    public Map<String, Object> getAllPostsByYear(int year) throws ParseException {
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+        Map<String, Integer> mapDatePostCount = new HashMap<>();
+
+        LocalDate date = LocalDate.now();
+        if (year == 0) {
+            year = date.getYear();
+        }
+
+        int[] years = postRepository.findAllYears().stream().mapToInt(Number::intValue).toArray();
+        List<Object> resultList = postRepository.countPostsByDate(formatDate.parse(year + "-01-01"), formatDate.parse((year + 1) + "-01-01"));
+
+        for (Object item : resultList) {
+            Object[] object = (Object[]) item;
+            Date datePost = (Date) object[0];
+            int countPosts = ((BigInteger) object[1]).intValue();
+            mapDatePostCount.put(datePost.toString(), countPosts);
+        }
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("years", years);
+        response.put("posts", mapDatePostCount);
+
+        return response;
+    }
+
+    public Map<String, Object> getAllPostsByDate(int offset, int limit, String date) throws ParseException {
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date byDate;
+
+        if (date != null) {
+            byDate = formatDate.parse(date);
+        } else {
+            byDate = new Date();
+        }
+        Date dateAfter = byDate;
+        LocalDate localDateBefore = new java.sql.Date(byDate.getTime()).toLocalDate();
+        Date dateBefore = java.sql.Date.valueOf(localDateBefore.plusDays(1));
+
+        return response(postRepository.findByIsActiveAndModerationStatusAndDate(dateAfter, dateBefore, PageRequest.of(offset, limit, sort("recent"))));
+    }
+
+    public Map<String, Object> getAllPostsByTag(int offset, int limit, String tag) {
+        return response(postRepository.findByIsActiveAndModerationStatusAndTag(tag, PageRequest.of(offset, limit, sort("recent"))));
     }
 }

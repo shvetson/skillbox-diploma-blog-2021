@@ -22,8 +22,9 @@ public class PostComment implements Serializable {
     @JoinColumn(name="parent_id")
     private PostComment parent;
 
-    @Column(name="post_id", nullable = false)
-    private long postId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="post_id", nullable = false)
+    private Post post;
 
     @Column(name="user_id", nullable = false)
     private long userId;

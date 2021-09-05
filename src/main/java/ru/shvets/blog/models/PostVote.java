@@ -22,8 +22,9 @@ public class PostVote implements Serializable {
     @Column(name = "user_id", nullable = false)
     private long userId;
 
-    @Column(name = "post_id", nullable = false)
-    private long postId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
     @Column(nullable = false)
     private Date time;

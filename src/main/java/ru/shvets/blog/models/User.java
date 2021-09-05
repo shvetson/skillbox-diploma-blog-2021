@@ -1,10 +1,10 @@
 package ru.shvets.blog.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -53,19 +53,19 @@ public class User implements Serializable {
     @JsonIgnore
     private List<Post> posts;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "post_votes",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id"))
-    @JsonIgnore
-    private List<Post> postListVotes;
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "post_votes",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "post_id"))
+//    @JsonIgnore
+//    private List<Post> postListVotes;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "post_comments",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id"))
-    @JsonIgnore
-    private List<Post> postListComments;
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "post_comments",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "post_id"))
+/*    @JsonIgnore
+    private List<Post> postListComments;*/
 
     public User (long id, String name){
         this.id = id;

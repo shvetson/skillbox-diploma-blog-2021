@@ -6,11 +6,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: false
+    show-sql: true
     open-in-view: false
     properties:
       hibernate:
-        format_sql: false
+        format_sql: true
         enable_lazy_load_no_trans: true
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
