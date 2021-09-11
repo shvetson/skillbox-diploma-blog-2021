@@ -46,12 +46,15 @@ public class User implements Serializable {
     private String code;
 
     @Column(columnDefinition = "text")
-    @JsonIgnore
     private String photo;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Post> posts;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<PostComment> comments;
 
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "post_votes",
@@ -64,11 +67,17 @@ public class User implements Serializable {
 //    @JoinTable(name = "post_comments",
 //            joinColumns = @JoinColumn(name = "user_id"),
 //            inverseJoinColumns = @JoinColumn(name = "post_id"))
-/*    @JsonIgnore
-    private List<Post> postListComments;*/
+//    @JsonIgnore
+//    private List<Post> postListComments;
 
-    public User (long id, String name){
+    public User(long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public User(long id, String name, String photo) {
+        this.id = id;
+        this.name = name;
+        this.photo = photo;
     }
 }

@@ -33,7 +33,6 @@ public class CheckService {
             userResponse.setModerationCount(user.getIsModerator() == 1 ? moderationCount : 0);
             userResponse.setSettings(true);
         }
-
         return new CheckResponse(resultAuth, resultAuth ? userResponse : null);
     }
 }

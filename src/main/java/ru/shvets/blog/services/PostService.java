@@ -5,11 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.shvets.blog.dto.PostCommentDto;
 import ru.shvets.blog.api.responses.PostResponse;
 import ru.shvets.blog.models.ModerationStatus;
 import ru.shvets.blog.models.Post;
 import ru.shvets.blog.models.User;
 import ru.shvets.blog.repositories.PostRepository;
+import ru.shvets.blog.utils.MappingUtils;
 
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -21,22 +23,25 @@ import java.util.*;
 @AllArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final MappingUtils mappingUtils;
 
-    public List<PostResponse> prepare(List<Post> list) {
+    public PostResponse preparePostResponse(Post post) {
+        return new PostResponse(
+                post.getId(),
+                post.getTime().getTime() / 1000,
+//                mappingUtils.mapToUserShortDto(post.getUser()),
+                new User(post.getUser().getId(), post.getUser().getName()),
+                post.getTitle(),
+                post.getText().substring(0, Math.min(post.getText().length(), 150)).concat(" ..."),
+                (int) post.getListVotes().stream().filter(a -> a.getValue() == 1).count(),
+                (int) post.getListVotes().stream().filter(a -> a.getValue() == -1).count(),
+                post.getListComments().size(),
+                post.getViewCount());
+    }
+
+    public List<PostResponse> prepareListPostResponse(List<Post> list) {
         List<PostResponse> response = new ArrayList<>();
-        list.forEach(post -> {
-            response.add(new PostResponse(
-                    post.getId(),
-                    post.getTime().getTime() / 1000,
-                    new User(post.getUser().getId(), post.getUser().getName()),
-                    post.getTitle(),
-                    post.getText().substring(0, Math.min(post.getText().length(), 150)).concat(" ..."),
-                    (int) post.getListVotes().stream().filter(a -> a.getValue() == 1).count(),
-                    (int) post.getListVotes().stream().filter(a -> a.getValue() == -1).count(),
-                    post.getListComments().size(),
-                    post.getViewCount())
-            );
-        });
+        list.forEach(post -> response.add(preparePostResponse(post)));
         return response;
     }
 
@@ -55,7 +60,7 @@ public class PostService {
 
     public Map<String, Object> response(Page<Post> page) {
         Map<String, Object> response = new HashMap<>();
-        response.put("posts", (page != null) ? prepare(page.toList()) : new PostResponse[]{});
+        response.put("posts", (page != null) ? prepareListPostResponse(page.toList()) : new PostResponse[]{});
         response.put("count", (page != null) ? page.getTotalElements() : 0);
         return response;
     }
@@ -121,5 +126,27 @@ public class PostService {
 
     public Map<String, Object> getAllPostsByTag(int offset, int limit, String tag) {
         return response(postRepository.findByIsActiveAndModerationStatusAndTag(tag, PageRequest.of(offset, limit, sort("recent"))));
+    }
+
+    public PostCommentDto getPostById(Long postId) {
+        //необходимо получить id пользователя
+        //проверить является ли он модератором или автором поста
+        //если да, то пост должен быть доступен даже при статусе NEW
+        //выставляется active=false
+        //в противном случае active=true (при статусе ACCEPTED и 1)
+        Post post = postRepository.findPostByIdAndAndIsActiveAndModerationStatus(postId, (byte) 1, ModerationStatus.ACCEPTED);
+
+        if (post == null) {
+            return null;
+        }
+        increaseViewCount(post);
+        return mappingUtils.mapToPostCommentDto(post);
+    }
+
+    public void increaseViewCount(Post post){
+        if (post != null) {
+            post.setViewCount(post.getViewCount() + 1);
+            postRepository.save(post);
+        }
     }
 }
