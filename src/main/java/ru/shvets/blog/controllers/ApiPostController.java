@@ -31,20 +31,20 @@ public class ApiPostController {
 
     @GetMapping(value = {"/byDate", "byDate/{offset}/{limit}/{date}"})
     public ResponseEntity<Map<String, Object>> getAllPostsByDate(@RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
-                                                          @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
-                                                          @RequestParam(name = "date", required = false, defaultValue = "") String date) throws ParseException {
+                                                                 @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
+                                                                 @RequestParam(name = "date", required = false, defaultValue = "") String date) throws ParseException {
         return ResponseEntity.ok(postService.getAllPostsByDate(offset, limit, date));
     }
 
     @GetMapping(value = {"/byTag", "byTag/{offset}/{limit}/{tag}"})
     public ResponseEntity<Map<String, Object>> getAllPostsByTag(@RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
-                                                          @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
-                                                          @RequestParam(name = "tag", required = false, defaultValue = "") String tag) {
+                                                                @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
+                                                                @RequestParam(name = "tag", required = false, defaultValue = "") String tag) {
         return ResponseEntity.ok(postService.getAllPostsByTag(offset, limit, tag));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostCommentDto> getPostById(@PathVariable(name = "id") Long id){
+    public ResponseEntity<PostCommentDto> getPostById(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 }

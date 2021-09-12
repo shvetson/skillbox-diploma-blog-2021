@@ -6,10 +6,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@NoArgsConstructor
+@Data
 @Entity
 @Table(name="captcha_codes")
 public class CaptchaCode implements Serializable {
