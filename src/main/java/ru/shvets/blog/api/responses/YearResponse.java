@@ -12,7 +12,5 @@ import java.util.Map;
 @AllArgsConstructor
 public class YearResponse {
     private int[] years;
-//    @JsonProperty("posts")
-//    private Map<String, Long> mapCountPostsByYear;
     private List<?> posts;
 }

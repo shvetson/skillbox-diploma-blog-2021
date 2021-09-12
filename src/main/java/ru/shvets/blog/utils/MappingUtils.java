@@ -1,20 +1,32 @@
 package ru.shvets.blog.utils;
 
 import org.springframework.stereotype.Service;
-import ru.shvets.blog.dto.CommentDto;
-import ru.shvets.blog.dto.PostCommentDto;
-import ru.shvets.blog.dto.UserDto;
-import ru.shvets.blog.dto.UserShortDto;
-import ru.shvets.blog.models.Post;
-import ru.shvets.blog.models.PostComment;
-import ru.shvets.blog.models.Tag;
-import ru.shvets.blog.models.User;
+import ru.shvets.blog.dto.*;
+import ru.shvets.blog.models.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class MappingUtils {
+    public SettingsDto mapToSettingsDto(List<GlobalSettings> list) {
+        SettingsDto dto = new SettingsDto();
+
+        dto.setMultiUserMode(FindItemFromSettings(list, Settings.MULTIUSER_MODE));
+        dto.setPostPreModeration(FindItemFromSettings(list, Settings.POST_PREMODERATION));
+        dto.setStatisticsIsPublic(FindItemFromSettings(list, Settings.STATISTICS_IS_PUBLIC));
+
+        return dto;
+    }
+
+    public boolean FindItemFromSettings(List<GlobalSettings> list, Settings settings) {
+        return list.stream().
+                filter(item -> item.getCode().equals(settings.toString())).
+                findFirst().get().
+                getValue().
+                equals("true");
+    }
+
     public PostCommentDto mapToPostCommentDto(Post post) {
         PostCommentDto dto = new PostCommentDto();
 
@@ -33,6 +45,26 @@ public class MappingUtils {
         return dto;
     }
 
+    public PostDto mapToPostDto(Post post) {
+        PostDto dto = new PostDto();
+
+        dto.setId(post.getId());
+        dto.setTimestamp(post.getTime().getTime() / 1000);
+        dto.setUser(mapToUserShortDto(post.getUser()));
+        dto.setTitle(post.getTitle());
+        dto.setAnnounce(post.getText().substring(0, Math.min(post.getText().length(), 150)).concat(" ..."));
+        dto.setLikeCount((int) post.getListVotes().stream().filter(a -> a.getValue() == 1).count());
+        dto.setDislikeCount((int) post.getListVotes().stream().filter(a -> a.getValue() == -1).count());
+        dto.setCommentCount(post.getListComments().size());
+        dto.setViewCount(post.getViewCount());
+
+        return dto;
+    }
+
+    public List<PostDto> mapToListPostDto(List<Post> list) {
+        return list.stream().map(this::mapToPostDto).collect(Collectors.toList());
+    }
+
     public CommentDto mapToCommentDto(PostComment postComment) {
         CommentDto dto = new CommentDto();
 
@@ -48,7 +80,7 @@ public class MappingUtils {
         return list.stream().map(this::mapToCommentDto).collect(Collectors.toList());
     }
 
-    public UserShortDto mapToUserShortDto(User user){
+    public UserShortDto mapToUserShortDto(User user) {
         UserShortDto dto = new UserShortDto();
 
         dto.setId(user.getId());
@@ -57,7 +89,7 @@ public class MappingUtils {
         return dto;
     }
 
-    public UserDto mapToUserDto(User user){
+    public UserDto mapToUserDto(User user) {
         UserDto dto = new UserDto();
 
         dto.setId(user.getId());
@@ -66,6 +98,4 @@ public class MappingUtils {
 
         return dto;
     }
-
 }
-

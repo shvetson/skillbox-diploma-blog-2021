@@ -6,10 +6,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.shvets.blog.dto.PostCommentDto;
-import ru.shvets.blog.api.responses.PostResponse;
+import ru.shvets.blog.dto.PostDto;
 import ru.shvets.blog.models.ModerationStatus;
 import ru.shvets.blog.models.Post;
-import ru.shvets.blog.models.User;
 import ru.shvets.blog.repositories.PostRepository;
 import ru.shvets.blog.utils.MappingUtils;
 
@@ -24,26 +23,6 @@ import java.util.*;
 public class PostService {
     private final PostRepository postRepository;
     private final MappingUtils mappingUtils;
-
-    public PostResponse preparePostResponse(Post post) {
-        return new PostResponse(
-                post.getId(),
-                post.getTime().getTime() / 1000,
-//                mappingUtils.mapToUserShortDto(post.getUser()),
-                new User(post.getUser().getId(), post.getUser().getName()),
-                post.getTitle(),
-                post.getText().substring(0, Math.min(post.getText().length(), 150)).concat(" ..."),
-                (int) post.getListVotes().stream().filter(a -> a.getValue() == 1).count(),
-                (int) post.getListVotes().stream().filter(a -> a.getValue() == -1).count(),
-                post.getListComments().size(),
-                post.getViewCount());
-    }
-
-    public List<PostResponse> prepareListPostResponse(List<Post> list) {
-        List<PostResponse> response = new ArrayList<>();
-        list.forEach(post -> response.add(preparePostResponse(post)));
-        return response;
-    }
 
     public Sort sort(String mode) {
         switch (mode) {
@@ -60,18 +39,21 @@ public class PostService {
 
     public Map<String, Object> response(Page<Post> page) {
         Map<String, Object> response = new HashMap<>();
-        response.put("posts", (page != null) ? prepareListPostResponse(page.toList()) : new PostResponse[]{});
+        response.put("posts", (page != null) ? mappingUtils.mapToListPostDto(page.toList()) : new PostDto[]{});
         response.put("count", (page != null) ? page.getTotalElements() : 0);
         return response;
     }
 
     public Map<String, Object> getAllPosts(int offset, int limit, String mode) {
         if (mode.equals("popular")) {
-            return response(postRepository.findAllIsActiveAndIsAcceptedAndComments(PageRequest.of(offset, limit, sort(mode))));
+            return response(postRepository.
+                    findAllIsActiveAndIsAcceptedAndComments(PageRequest.of(offset, limit, sort(mode))));
         } else if (mode.equals("best")) {
-            return response(postRepository.findAllIsActiveAndIsAcceptedAndVotes(PageRequest.of(offset, limit, sort(mode))));
+            return response(postRepository.
+                    findAllIsActiveAndIsAcceptedAndVotes(PageRequest.of(offset, limit, sort(mode))));
         } else {
-            return response(postRepository.findAllIsActiveAndIsAccepted(PageRequest.of(offset, limit, sort(mode))));
+            return response(postRepository.
+                    findAllIsActiveAndIsAccepted(PageRequest.of(offset, limit, sort(mode))));
         }
     }
 

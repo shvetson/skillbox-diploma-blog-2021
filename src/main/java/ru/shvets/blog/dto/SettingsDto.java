@@ -1,10 +1,14 @@
-package ru.shvets.blog.api.responses;
+package ru.shvets.blog.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class SettingsResponse {
+public class SettingsDto {
     @JsonProperty("MULTIUSER_MODE")
     private boolean multiUserMode;
     @JsonProperty("POST_PREMODERATION")

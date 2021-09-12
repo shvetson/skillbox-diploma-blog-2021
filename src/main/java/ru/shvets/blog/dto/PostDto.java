@@ -1,19 +1,16 @@
-package ru.shvets.blog.api.responses;
+package ru.shvets.blog.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.shvets.blog.dto.UserShortDto;
-import ru.shvets.blog.models.User;
+import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
-
-@Data
 @AllArgsConstructor
-public class PostResponse {
+@NoArgsConstructor
+@Data
+public class PostDto {
     private long id;
     private long timestamp;
-    private User user;
-//    private UserShortDto user;
+    private UserShortDto user;
     private String title;
     private String announce;
     private int likeCount;
