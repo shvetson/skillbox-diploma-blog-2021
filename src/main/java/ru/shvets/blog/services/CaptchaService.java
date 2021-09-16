@@ -9,9 +9,8 @@ import org.springframework.stereotype.Service;
 import ru.shvets.blog.dto.CaptchaDto;
 import ru.shvets.blog.models.CaptchaCode;
 import ru.shvets.blog.repositories.CaptchaRepository;
+import ru.shvets.blog.utils.TimeUtils;
 
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Random;
@@ -22,6 +21,7 @@ import java.util.Random;
 public class CaptchaService {
     @Autowired
     private CaptchaRepository captchaRepository;
+    private TimeUtils timeUtils;
     @Value("${captcha.timeHours}")
     private int timePeriodInHours;
     @Value("${captcha.lengthSecretCode}")
@@ -51,9 +51,7 @@ public class CaptchaService {
     }
 
     private void clearCaptcha(){
-        ZoneId z = ZoneId.systemDefault();
-        int offSetSeconds = z.getRules().getOffset(Instant.now()).getTotalSeconds();
-        int totalSeconds= (timePeriodInHours * 3600) + offSetSeconds;
+        int totalSeconds= (timePeriodInHours * 3600) + timeUtils.getSecondsOffSet();
         captchaRepository.deleteAllTimeGreaterThanHour(totalSeconds);
     }
 
