@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -17,6 +18,7 @@ public class CaptchaCode implements Serializable {
     @Column(nullable = false)
     private long id;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date time;
 
