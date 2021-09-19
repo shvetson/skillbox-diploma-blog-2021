@@ -6,7 +6,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.shvets.blog.dto.PostCommentDto;
+import ru.shvets.blog.dto.PostCountDto;
 import ru.shvets.blog.dto.PostDto;
+import ru.shvets.blog.exceptions.NoSuchPostException;
 import ru.shvets.blog.models.ModerationStatus;
 import ru.shvets.blog.models.Post;
 import ru.shvets.blog.repositories.PostRepository;
@@ -37,14 +39,14 @@ public class PostService {
         }
     }
 
-    public Map<String, Object> response(Page<Post> page) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("posts", (page != null) ? mappingUtils.mapToListPostDto(page.toList()) : new PostDto[]{});
-        response.put("count", (page != null) ? page.getTotalElements() : 0);
-        return response;
+    public PostCountDto response(Page<Post> page) {
+        PostCountDto dto = new PostCountDto();
+        dto.setCount((page != null) ? page.getTotalElements() : 0);
+        dto.setPosts((page != null) ? mappingUtils.mapToListPostDto(page.toList()) : List.of(new PostDto[]{}));
+        return dto;
     }
 
-    public Map<String, Object> getAllPosts(int offset, int limit, String mode) {
+    public PostCountDto getAllPosts(int offset, int limit, String mode) {
         if (mode.equals("popular")) {
             return response(postRepository.
                     findAllIsActiveAndIsAcceptedAndComments(PageRequest.of(offset, limit, sort(mode))));
@@ -57,7 +59,7 @@ public class PostService {
         }
     }
 
-    public Map<String, Object> getAllPostsByQuery(int offset, int limit, String query) {
+    public PostCountDto getAllPostsByQuery(int offset, int limit, String query) {
         return response(postRepository.findByIsActiveAndModerationStatusAndTitleContaining((byte) 1,
                 ModerationStatus.ACCEPTED,
                 query,
@@ -90,7 +92,7 @@ public class PostService {
         return response;
     }
 
-    public Map<String, Object> getAllPostsByDate(int offset, int limit, String date) throws ParseException {
+    public PostCountDto getAllPostsByDate(int offset, int limit, String date) throws ParseException {
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
         Date byDate;
 
@@ -106,7 +108,7 @@ public class PostService {
         return response(postRepository.findByIsActiveAndModerationStatusAndDate(dateAfter, dateBefore, PageRequest.of(offset, limit, sort("recent"))));
     }
 
-    public Map<String, Object> getAllPostsByTag(int offset, int limit, String tag) {
+    public PostCountDto getAllPostsByTag(int offset, int limit, String tag) {
         return response(postRepository.findByIsActiveAndModerationStatusAndTag(tag, PageRequest.of(offset, limit, sort("recent"))));
     }
 
@@ -119,8 +121,9 @@ public class PostService {
         Post post = postRepository.findPostByIdAndAndIsActiveAndModerationStatus(postId, (byte) 1, ModerationStatus.ACCEPTED);
 
         if (post == null) {
-            return null;
+            throw new NoSuchPostException("Записи с id="+postId+" в базе данных нет.");
         }
+
         increaseViewCount(post);
         return mappingUtils.mapToPostCommentDto(post);
     }

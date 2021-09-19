@@ -10,6 +10,7 @@ import ru.shvets.blog.services.CheckService;
 import ru.shvets.blog.services.InitService;
 import ru.shvets.blog.services.UserService;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 
@@ -23,7 +24,10 @@ public class ApiAuthController {
     private final UserService userService;
 
     @GetMapping("/check")
-    public CheckResponse check(){
+    public CheckResponse check(HttpSession session){
+        session.setAttribute("user", 1);
+        System.out.println(session.getAttribute("user"));
+
         return checkService.getUser(initService.authId());
     }
     

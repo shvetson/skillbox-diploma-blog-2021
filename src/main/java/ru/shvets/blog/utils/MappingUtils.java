@@ -2,7 +2,6 @@ package ru.shvets.blog.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.shvets.blog.dto.*;
 import ru.shvets.blog.models.*;
@@ -56,7 +55,7 @@ public class MappingUtils {
         PostDto dto = new PostDto();
 
         dto.setId(post.getId());
-        dto.setTimestamp((post.getTime().getTime()  + (long) timeUtils.getSecondsOffSet())/ 1000);
+        dto.setTimestamp(post.getTime().getTime()/ 1000);
         dto.setUser(mapToUserShortDto(post.getUser()));
         dto.setTitle(post.getTitle());
         dto.setAnnounce(post.getText().substring(0, Math.min(post.getText().length(), 150)).concat(" ..."));

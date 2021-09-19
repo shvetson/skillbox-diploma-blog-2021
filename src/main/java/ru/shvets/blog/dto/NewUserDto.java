@@ -13,14 +13,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 public class NewUserDto implements Serializable {
-
-
-    @Email
     @JsonProperty("e_mail")
     private String email;
-
     private String password;
-
     private String name;
     @JsonProperty("captcha")
     private String code;

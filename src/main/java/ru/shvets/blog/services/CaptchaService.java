@@ -1,9 +1,6 @@
 package ru.shvets.blog.services;
 
 import com.github.cage.GCage;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.shvets.blog.dto.CaptchaDto;
@@ -16,18 +13,21 @@ import java.util.Date;
 import java.util.Random;
 
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
 public class CaptchaService {
-    @Autowired
-    private CaptchaRepository captchaRepository;
-    private TimeUtils timeUtils;
+    private final CaptchaRepository captchaRepository;
+    private  final TimeUtils timeUtils;
+
     @Value("${captcha.timeHours}")
     private int timePeriodInHours;
     @Value("${captcha.lengthSecretCode}")
     private int lengthSecretCode;
     @Value("${captcha.alphabet}")
     private String alphabet;
+
+    public CaptchaService(CaptchaRepository captchaRepository, TimeUtils timeUtils) {
+        this.captchaRepository = captchaRepository;
+        this.timeUtils = timeUtils;
+    }
 
     public CaptchaDto getCaptcha() {
         final String PREFIX = "data:image/png;base64, ";
@@ -40,9 +40,12 @@ public class CaptchaService {
         captchaDto.setSecret(token);
         captchaDto.setImage(PREFIX.concat(image));
 
+        byte[] decodedBytes = Base64.getDecoder().decode(image);
+
         CaptchaCode captchaCode = new CaptchaCode();
         captchaCode.setTime(new Date());
-        captchaCode.setSecretCode(getSecretCode(lengthSecretCode));
+        captchaCode.setSecretCode(decodedBytes.toString());
+        //captchaCode.setSecretCode(getSecretCode(lengthSecretCode));
         captchaCode.setCode(token);
         captchaRepository.save(captchaCode);
 
@@ -51,7 +54,7 @@ public class CaptchaService {
     }
 
     private void clearCaptcha(){
-        int totalSeconds= (timePeriodInHours * 3600) + timeUtils.getSecondsOffSet();
+        long totalSeconds= (timePeriodInHours * 3600) + timeUtils.getSecondsOffSet();
         captchaRepository.deleteAllTimeGreaterThanHour(totalSeconds);
     }
 
