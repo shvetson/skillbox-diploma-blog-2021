@@ -1,6 +1,7 @@
 package ru.shvets.blog.services;
 
 import com.github.cage.GCage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.shvets.blog.dto.CaptchaDto;
@@ -8,6 +9,7 @@ import ru.shvets.blog.models.CaptchaCode;
 import ru.shvets.blog.repositories.CaptchaRepository;
 import ru.shvets.blog.utils.TimeUtils;
 
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Random;
@@ -24,6 +26,7 @@ public class CaptchaService {
     @Value("${captcha.alphabet}")
     private String alphabet;
 
+    @Autowired
     public CaptchaService(CaptchaRepository captchaRepository, TimeUtils timeUtils) {
         this.captchaRepository = captchaRepository;
         this.timeUtils = timeUtils;
@@ -44,7 +47,7 @@ public class CaptchaService {
 
         CaptchaCode captchaCode = new CaptchaCode();
         captchaCode.setTime(new Date());
-        captchaCode.setSecretCode(decodedBytes.toString());
+        captchaCode.setSecretCode(Arrays.toString(decodedBytes));
         //captchaCode.setSecretCode(getSecretCode(lengthSecretCode));
         captchaCode.setCode(token);
         captchaRepository.save(captchaCode);
@@ -54,7 +57,7 @@ public class CaptchaService {
     }
 
     private void clearCaptcha(){
-        long totalSeconds= (timePeriodInHours * 3600) + timeUtils.getSecondsOffSet();
+        long totalSeconds= (timePeriodInHours * 3600L) + timeUtils.getSecondsOffSet();
         captchaRepository.deleteAllTimeGreaterThanHour(totalSeconds);
     }
 

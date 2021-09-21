@@ -22,13 +22,16 @@ public class ApiAuthController {
     private final InitService initService;
     private final CaptchaService captchaService;
     private final UserService userService;
+    public static HttpSession httpSession;
 
     @GetMapping("/check")
-    public CheckResponse check(HttpSession session){
-        session.setAttribute("user", 1);
-        System.out.println(session.getAttribute("user"));
+    public CheckResponse check(){
 
-        return checkService.getUser(initService.authId());
+        long userId = initService.authId();
+        httpSession.setAttribute("user", userId);
+        //System.out.println(userId);
+
+        return checkService.getUser(userId);
     }
     
     @GetMapping("/check/users/{id}")

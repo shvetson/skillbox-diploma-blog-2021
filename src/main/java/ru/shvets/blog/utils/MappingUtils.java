@@ -1,7 +1,5 @@
 package ru.shvets.blog.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shvets.blog.dto.*;
 import ru.shvets.blog.models.*;
@@ -10,10 +8,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
 public class MappingUtils {
-    private TimeUtils timeUtils;
+    private final TimeUtils timeUtils;
+
+    public MappingUtils(TimeUtils timeUtils) {
+        this.timeUtils = timeUtils;
+    }
 
     public SettingsDto mapToSettingsDto(List<GlobalSettings> list) {
         SettingsDto dto = new SettingsDto();
@@ -37,7 +37,7 @@ public class MappingUtils {
         PostCommentDto dto = new PostCommentDto();
 
         dto.setId(post.getId());
-        dto.setTimestamp(post.getTime().getTime() / 1000);
+        dto.setTimestamp(post.getTime().getTime() / 1000 - timeUtils.getSecondsOffSet());
         dto.setActive(post.getIsActive() == 1);
         dto.setUser(mapToUserShortDto(post.getUser()));
         dto.setTitle(post.getTitle());
@@ -55,7 +55,7 @@ public class MappingUtils {
         PostDto dto = new PostDto();
 
         dto.setId(post.getId());
-        dto.setTimestamp(post.getTime().getTime()/ 1000);
+        dto.setTimestamp(post.getTime().getTime()/ 1000 - timeUtils.getSecondsOffSet());
         dto.setUser(mapToUserShortDto(post.getUser()));
         dto.setTitle(post.getTitle());
         dto.setAnnounce(post.getText().substring(0, Math.min(post.getText().length(), 150)).concat(" ..."));

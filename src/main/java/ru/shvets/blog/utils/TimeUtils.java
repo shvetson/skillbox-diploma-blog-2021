@@ -1,6 +1,5 @@
 package ru.shvets.blog.utils;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

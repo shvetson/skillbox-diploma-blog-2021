@@ -7,11 +7,13 @@ import ru.shvets.blog.dto.PostCommentDto;
 import ru.shvets.blog.dto.PostCountDto;
 import ru.shvets.blog.services.PostService;
 
+import javax.validation.constraints.Min;
 import java.text.ParseException;
 import java.util.Map;
 
 @RestController
 @AllArgsConstructor
+
 @RequestMapping("/api/post")
 public class ApiPostController {
     private final PostService postService;
@@ -45,7 +47,7 @@ public class ApiPostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostCommentDto> getPostById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<PostCommentDto> getPostById(@PathVariable(name = "id") @Min(1) Long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 }

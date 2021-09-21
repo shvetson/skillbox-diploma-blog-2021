@@ -1,10 +1,12 @@
 package ru.shvets.blog.services;
 
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.shvets.blog.controllers.ApiAuthController;
 import ru.shvets.blog.dto.PostCommentDto;
 import ru.shvets.blog.dto.PostCountDto;
 import ru.shvets.blog.dto.PostDto;
@@ -14,6 +16,7 @@ import ru.shvets.blog.models.Post;
 import ru.shvets.blog.repositories.PostRepository;
 import ru.shvets.blog.utils.MappingUtils;
 
+import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,10 +24,15 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final MappingUtils mappingUtils;
+
+    @Autowired
+    public PostService(PostRepository postRepository, MappingUtils mappingUtils) {
+        this.postRepository = postRepository;
+        this.mappingUtils = mappingUtils;
+    }
 
     public Sort sort(String mode) {
         switch (mode) {
@@ -119,6 +127,10 @@ public class PostService {
         //выставляется active=false
         //в противном случае active=true (при статусе ACCEPTED и 1)
         Post post = postRepository.findPostByIdAndAndIsActiveAndModerationStatus(postId, (byte) 1, ModerationStatus.ACCEPTED);
+
+        System.out.println("user - " + ApiAuthController.httpSession.getAttribute("user"));
+//        HttpSession httpSessionl;
+//        httpSession.getAttribute("user");
 
         if (post == null) {
             throw new NoSuchPostException("Записи с id="+postId+" в базе данных нет.");
