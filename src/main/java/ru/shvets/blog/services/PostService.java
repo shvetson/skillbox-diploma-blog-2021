@@ -13,7 +13,9 @@ import ru.shvets.blog.dto.PostDto;
 import ru.shvets.blog.exceptions.NoSuchPostException;
 import ru.shvets.blog.models.ModerationStatus;
 import ru.shvets.blog.models.Post;
+import ru.shvets.blog.models.User;
 import ru.shvets.blog.repositories.PostRepository;
+import ru.shvets.blog.repositories.UserRepository;
 import ru.shvets.blog.utils.MappingUtils;
 
 import javax.servlet.http.HttpSession;
@@ -26,12 +28,16 @@ import java.util.*;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
     private final MappingUtils mappingUtils;
+    private final HttpSession httpSession;
 
     @Autowired
-    public PostService(PostRepository postRepository, MappingUtils mappingUtils) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, MappingUtils mappingUtils, HttpSession httpSession) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
         this.mappingUtils = mappingUtils;
+        this.httpSession = httpSession;
     }
 
     public Sort sort(String mode) {
@@ -121,26 +127,22 @@ public class PostService {
     }
 
     public PostCommentDto getPostById(Long postId) {
-        //необходимо получить id пользователя
-        //проверить является ли он модератором или автором поста
-        //если да, то пост должен быть доступен даже при статусе NEW
-        //выставляется active=false
-        //в противном случае active=true (при статусе ACCEPTED и 1)
+        long userId = (long) httpSession.getAttribute("user");
+        User user = userRepository.findUserById(userId);
+
         Post post = postRepository.findPostByIdAndAndIsActiveAndModerationStatus(postId, (byte) 1, ModerationStatus.ACCEPTED);
 
-        System.out.println("user - " + ApiAuthController.httpSession.getAttribute("user"));
-//        HttpSession httpSessionl;
-//        httpSession.getAttribute("user");
-
         if (post == null) {
-            throw new NoSuchPostException("Записи с id="+postId+" в базе данных нет.");
+            throw new NoSuchPostException("Записи с id=" + postId + " в базе данных нет.");
         }
 
-        increaseViewCount(post);
+        if (user.getIsModerator() != 1 & post.getUser().getId() != userId) {
+            increaseViewCount(post);
+        }
         return mappingUtils.mapToPostCommentDto(post);
     }
 
-    public void increaseViewCount(Post post){
+    public void increaseViewCount(Post post) {
         if (post != null) {
             post.setViewCount(post.getViewCount() + 1);
             postRepository.save(post);

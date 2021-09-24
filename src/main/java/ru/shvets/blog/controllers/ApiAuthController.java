@@ -1,18 +1,25 @@
 package ru.shvets.blog.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.shvets.blog.api.responses.CheckResponse;
 import ru.shvets.blog.dto.CaptchaDto;
 import ru.shvets.blog.dto.NewUserDto;
+import ru.shvets.blog.models.User;
 import ru.shvets.blog.services.CaptchaService;
 import ru.shvets.blog.services.CheckService;
 import ru.shvets.blog.services.InitService;
 import ru.shvets.blog.services.UserService;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -22,32 +29,40 @@ public class ApiAuthController {
     private final InitService initService;
     private final CaptchaService captchaService;
     private final UserService userService;
-    public static HttpSession httpSession;
+    private final HttpSession httpSession;
 
     @GetMapping("/check")
-    public CheckResponse check(){
-
+    public CheckResponse check() {
         long userId = initService.authId();
         httpSession.setAttribute("user", userId);
-        //System.out.println(userId);
-
         return checkService.getUser(userId);
     }
-    
+
     @GetMapping("/check/users/{id}")
-    public CheckResponse getUser(@PathVariable long id){
+    public CheckResponse getUser(@PathVariable long id) {
         return checkService.getUser(id);
     }
 
     @GetMapping("/captcha")
-    public CaptchaDto getCaptcha(){
+    public CaptchaDto getCaptcha() {
         return captchaService.getCaptcha();
     }
 
     @PostMapping("/register")
-    public NewUserDto addUser(@RequestParam(name = "email") @Email(message = "Убедитесь, что адрес электронной почты действителен") String email,
-                              @RequestParam(name = "password") @Min(value = 6, message = "Убедитесь, что количество символов пароля не меньше 6-ти") String password,
-                              @RequestParam(name = "name") String name){
-        return userService.addUser();
+    public ResponseEntity<?> addUser(@Valid @RequestBody NewUserDto newUserDto) {
+
+        User user = new User();
+        user.setEmail(newUserDto.getEmail());
+        user.setPassword(newUserDto.getPassword());
+        user.setName(newUserDto.getName());
+        user.setCode(newUserDto.getSecretCode());
+
+        userService.addUser(user);
+        
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("result", true);
+        response.put("errors", null);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

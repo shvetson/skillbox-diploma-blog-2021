@@ -18,28 +18,32 @@ import java.util.Map;
 public class ApiPostController {
     private final PostService postService;
 
-    @GetMapping(value = {"", "/{offset}/{limit}/{mode}"})
+//    @GetMapping(value = {"", "/{offset}/{limit}/{mode}"})
+    @GetMapping()
     public ResponseEntity<PostCountDto> getAllPosts(@RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
                                                     @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
                                                     @RequestParam(name = "mode", required = false, defaultValue = "recent") String mode) {
         return ResponseEntity.ok(postService.getAllPosts(offset, limit, mode));
     }
 
-    @GetMapping(value = {"/search", "search/{offset}/{limit}/{query}"})
+//    @GetMapping(value = {"/search", "search/{offset}/{limit}/{query}"})
+    @GetMapping("/search")
     public ResponseEntity<PostCountDto> getAllPostsByQuery(@RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
                                                                   @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
                                                                   @RequestParam(name = "query", required = false, defaultValue = "") String query) {
         return ResponseEntity.ok(postService.getAllPostsByQuery(offset, limit, query));
     }
 
-    @GetMapping(value = {"/byDate", "byDate/{offset}/{limit}/{date}"})
+//    @GetMapping(value = {"/byDate", "byDate/{offset}/{limit}/{date}"})
+    @GetMapping("/byDate")
     public ResponseEntity<PostCountDto> getAllPostsByDate(@RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
                                                                  @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
                                                                  @RequestParam(name = "date", required = false, defaultValue = "") String date) throws ParseException {
         return ResponseEntity.ok(postService.getAllPostsByDate(offset, limit, date));
     }
 
-    @GetMapping(value = {"/byTag", "byTag/{offset}/{limit}/{tag}"})
+//    @GetMapping(value = {"/byTag", "byTag/{offset}/{limit}/{tag}"})
+    @GetMapping("/byTag")
     public ResponseEntity<PostCountDto> getAllPostsByTag(@RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
                                                                 @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
                                                                 @RequestParam(name = "tag", required = false, defaultValue = "") String tag) {

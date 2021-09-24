@@ -6,4 +6,5 @@ import ru.shvets.blog.models.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    User findUserById(long id);
 }
