@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ru.shvets.blog.controllers.ApiAuthController;
 import ru.shvets.blog.dto.PostCommentDto;
 import ru.shvets.blog.dto.PostCountDto;
 import ru.shvets.blog.dto.PostDto;
@@ -127,17 +125,19 @@ public class PostService {
     }
 
     public PostCommentDto getPostById(Long postId) {
-        long userId = (long) httpSession.getAttribute("user");
-        User user = userRepository.findUserById(userId);
-
         Post post = postRepository.findPostByIdAndAndIsActiveAndModerationStatus(postId, (byte) 1, ModerationStatus.ACCEPTED);
 
         if (post == null) {
             throw new NoSuchPostException("Записи с id=" + postId + " в базе данных нет.");
         }
 
-        if (user.getIsModerator() != 1 & post.getUser().getId() != userId) {
-            increaseViewCount(post);
+        long userId = (long) httpSession.getAttribute("user");
+        if (userId !=0 ) {
+            User user = userRepository.findUserById(userId);
+
+            if (user.getIsModerator() != 1 & post.getUser().getId() != userId) {
+                increaseViewCount(post);
+            }
         }
         return mappingUtils.mapToPostCommentDto(post);
     }

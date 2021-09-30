@@ -20,9 +20,14 @@ public class CheckService {
     private final HttpSession httpSession;
 
     public CheckResponse getUser(long id) {
-        UserResponse userResponse = new UserResponse();
         boolean isAuth = new Random().nextBoolean();
 
+        if (!isAuth) {
+            httpSession.setAttribute("user", (long) 0);
+            return new CheckResponse(false, null);
+        }
+
+        UserResponse userResponse = new UserResponse();
         User user = userRepository.findById(id).orElse(null);
         int moderationCount = postRepository.findByModerationStatus(ModerationStatus.NEW).size();
 
@@ -38,10 +43,6 @@ public class CheckService {
             httpSession.setAttribute("user", user.getId());
         }
 
-        if (!isAuth){
-            httpSession.setAttribute("user", 0);
-        }
-
-        return new CheckResponse(isAuth, isAuth ? userResponse : null);
+        return new CheckResponse(true, userResponse);
     }
 }
