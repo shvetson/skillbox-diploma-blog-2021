@@ -4,33 +4,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.shvets.blog.validators.IsEmail;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class NewUserDto {
-    @NotNull
+    @NotBlank(message = "Убедитесь, что поле не пустое")
     @Email(message = "Убедитесь, что адрес электронной почты действителен")
+    @IsEmail(message = "Этот e-mail уже зарегистрирован")
     @JsonProperty("e_mail")
     private String email;
 
-    @NotNull
-    @Min(value = 6, message = "Убедитесь, что количество символов пароля не меньше 6-ти")
+    @NotBlank(message = "Убедитесь, что поле не пустое")
+    @Size(min = 6, message = "Пароль короче 6-ти символов")
     private String password;
 
-    @NotNull
+    @NotBlank(message = "Имя указано неверно (убедитесь, что поле не пустое)")
     private String name;
 
-    @NotNull
+    @NotBlank(message = "Убедитесь, что поле не пустое")
     @JsonProperty("captcha")
     private String code;
 
-    @NotNull
+    @NotBlank(message = "Убедитесь, что поле не пустое")
     @JsonProperty("captcha_secret")
     private String secretCode;
 }

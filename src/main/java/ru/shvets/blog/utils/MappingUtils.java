@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.shvets.blog.dto.*;
 import ru.shvets.blog.models.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,5 +104,17 @@ public class MappingUtils {
         dto.setPhoto(user.getPhoto());
 
         return dto;
+    }
+
+    public User mapToUser(NewUserDto newUserDto){
+        User user = new User();
+
+        user.setRegTime(new Date());
+        user.setEmail(newUserDto.getEmail());
+        user.setPassword(newUserDto.getPassword());
+        user.setName(newUserDto.getName());
+        user.setCode(newUserDto.getSecretCode());
+
+        return user;
     }
 }

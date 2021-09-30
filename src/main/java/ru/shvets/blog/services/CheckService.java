@@ -9,6 +9,7 @@ import ru.shvets.blog.models.User;
 import ru.shvets.blog.repositories.PostRepository;
 import ru.shvets.blog.repositories.UserRepository;
 
+import javax.servlet.http.HttpSession;
 import java.util.Random;
 
 @Service
@@ -16,10 +17,11 @@ import java.util.Random;
 public class CheckService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final HttpSession httpSession;
 
     public CheckResponse getUser(long id) {
         UserResponse userResponse = new UserResponse();
-        boolean resultAuth = new Random().nextBoolean();
+        boolean isAuth = new Random().nextBoolean();
 
         User user = userRepository.findById(id).orElse(null);
         int moderationCount = postRepository.findByModerationStatus(ModerationStatus.NEW).size();
@@ -32,7 +34,14 @@ public class CheckService {
             userResponse.setModeration(user.getIsModerator() == 1);
             userResponse.setModerationCount(user.getIsModerator() == 1 ? moderationCount : 0);
             userResponse.setSettings(true);
+
+            httpSession.setAttribute("user", user.getId());
         }
-        return new CheckResponse(resultAuth, resultAuth ? userResponse : null);
+
+        if (!isAuth){
+            httpSession.setAttribute("user", 0);
+        }
+
+        return new CheckResponse(isAuth, isAuth ? userResponse : null);
     }
 }
