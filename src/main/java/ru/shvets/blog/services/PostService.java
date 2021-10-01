@@ -3,6 +3,7 @@ package ru.shvets.blog.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.shvets.blog.dto.PostCommentDto;
@@ -125,14 +126,14 @@ public class PostService {
     }
 
     public PostCommentDto getPostById(Long postId) {
-        Post post = postRepository.findPostByIdAndAndIsActiveAndModerationStatus(postId, (byte) 1, ModerationStatus.ACCEPTED);
+        Post post = postRepository.findPostByIdAndIsActiveAndModerationStatus(postId, (byte) 1, ModerationStatus.ACCEPTED);
 
         if (post == null) {
             throw new NoSuchPostException("Записи с id=" + postId + " в базе данных нет.");
         }
 
         long userId = (long) httpSession.getAttribute("user");
-        if (userId !=0 ) {
+        if (userId != 0) {
             User user = userRepository.findUserById(userId);
 
             if (user.getIsModerator() != 1 & post.getUser().getId() != userId) {
@@ -146,6 +147,23 @@ public class PostService {
         if (post != null) {
             post.setViewCount(post.getViewCount() + 1);
             postRepository.save(post);
+        }
+    }
+
+    public PostCountDto getAllPostByModerationStatus(int offset, int limit, ModerationStatus moderationStatus) {
+        return response(postRepository.findAllByIsActiveAndModerationStatus((byte) 1, moderationStatus, PageRequest.of(offset, limit, sort("recent"))));
+    }
+
+    public PostCountDto getAllPostByStatus(int offset, int limit, String status) {
+        switch (status) {
+            case "pending":
+                return response(postRepository.findAllByIsActiveAndModerationStatus((byte) 1, ModerationStatus.NEW, PageRequest.of(offset, limit, sort("recent"))));
+            case "declined":
+                return response(postRepository.findAllByIsActiveAndModerationStatus((byte) 1, ModerationStatus.DECLINED, PageRequest.of(offset, limit, sort("recent"))));
+            case "published":
+                return response(postRepository.findAllByIsActiveAndModerationStatus((byte) 1, ModerationStatus.ACCEPTED, PageRequest.of(offset, limit, sort("recent"))));
+            default:
+                return response(postRepository.findAllByIsActiveAndModerationStatus((byte) 0, null, PageRequest.of(offset, limit, sort("recent"))));
         }
     }
 }

@@ -14,11 +14,11 @@ public class PostDto {
     private long id;
     @Temporal(TemporalType.TIMESTAMP) //!
     private long timestamp;
-    private UserShortDto user;
     private String title;
     private String announce;
     private int likeCount;
     private int dislikeCount;
     private int commentCount;
     private int viewCount;
+    private UserShortDto user;
 }

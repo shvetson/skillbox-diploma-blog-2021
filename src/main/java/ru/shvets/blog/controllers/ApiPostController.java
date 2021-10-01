@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.shvets.blog.dto.PostCommentDto;
 import ru.shvets.blog.dto.PostCountDto;
+import ru.shvets.blog.models.ModerationStatus;
 import ru.shvets.blog.services.PostService;
 
 import javax.validation.constraints.Min;
@@ -49,4 +50,23 @@ public class ApiPostController {
     public ResponseEntity<PostCommentDto> getPostById(@PathVariable(name = "id") @Min(1) Long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
+
+    @GetMapping("/moderation")
+    public ResponseEntity<PostCountDto> getAllPostsByModerationStatus(@RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
+                                                                 @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
+                                                                 @RequestParam(name = "status", required = false, defaultValue = "NEW") ModerationStatus status) {
+        //NEW, ACCEPTED, DECLINED
+        //Необходимо доработать авторизацию
+        return ResponseEntity.ok(postService.getAllPostByModerationStatus(offset, limit, status));
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<PostCountDto> getAllPostsByStatus(@RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
+                                                                      @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
+                                                                      @RequestParam(name = "status", required = false, defaultValue = "") String status) {
+        //inactive, pending, declined, published
+        //Необходимо доработать авторизацию
+        return ResponseEntity.ok(postService.getAllPostByStatus(offset, limit, status));
+    }
+
 }

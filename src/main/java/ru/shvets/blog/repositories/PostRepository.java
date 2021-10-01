@@ -27,7 +27,8 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
     Page<Post> findByIsActiveAndModerationStatusAndTitleContaining(byte isActive, ModerationStatus moderationStatus, String title, Pageable page);
 
     Page<Post> findAllByIsActiveAndModerationStatus(byte isActive, ModerationStatus moderationStatus, Pageable pageable);
-    Post findPostByIdAndAndIsActiveAndModerationStatus(long id, byte isActive, ModerationStatus moderationStatus);
+
+    Post findPostByIdAndIsActiveAndModerationStatus(long id, byte isActive, ModerationStatus moderationStatus);
 
     @Query(nativeQuery = true, value = "select * from posts where is_active=1 and moderation_status='ACCEPTED'")
     Page<Post> findAllIsActiveAndIsAccepted(Pageable pageable);
