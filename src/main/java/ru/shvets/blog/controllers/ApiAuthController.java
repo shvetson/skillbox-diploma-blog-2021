@@ -6,23 +6,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.shvets.blog.api.responses.CheckResponse;
 import ru.shvets.blog.api.responses.ErrorResponse;
-import ru.shvets.blog.api.responses.UserResponse;
 import ru.shvets.blog.dto.CaptchaDto;
 import ru.shvets.blog.dto.NewUserDto;
-import ru.shvets.blog.dto.UserLoginDto;
-import ru.shvets.blog.models.ModerationStatus;
-import ru.shvets.blog.models.User;
+import ru.shvets.blog.dto.UserLoginInDto;
 import ru.shvets.blog.services.CaptchaService;
 import ru.shvets.blog.services.CheckService;
 import ru.shvets.blog.services.InitService;
 import ru.shvets.blog.services.UserService;
 import ru.shvets.blog.utils.MappingUtils;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 @Validated
 @RestController
@@ -33,8 +26,6 @@ public class ApiAuthController {
     private final InitService initService;
     private final CaptchaService captchaService;
     private final UserService userService;
-    private final MappingUtils mappingUtils;
-    private final HttpSession httpSession;
 
     @GetMapping("/check")
     public CheckResponse check() {
@@ -53,31 +44,11 @@ public class ApiAuthController {
 
     @PostMapping("/register")
     public ResponseEntity<ErrorResponse> addUser(@Valid @RequestBody NewUserDto newUserDto) {
-        ErrorResponse response = new ErrorResponse();
-        userService.addUser(mappingUtils.mapToUser(newUserDto));
-        response.setResult(true);
-        response.setErrors(null);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(userService.addUser(newUserDto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CheckResponse> login(@Valid @RequestBody UserLoginDto userLoginDto) {
-        Map<String, Long> mapSessions = new HashMap<>();
-
-        UserResponse userResponse = new UserResponse();
-        CheckResponse checkResponse = new CheckResponse();
-
-        User user = userService.getUserByEmail(userLoginDto.getEmail());
-
-        if (user != null) {
-            mapSessions.put(httpSession.getId(), user.getId());
-
-
-
-        } else {
-            checkResponse.setResult(false);
-            checkResponse.setUserResponse(null);
-        }
-        return ResponseEntity.ok(checkResponse);
+    public ResponseEntity<CheckResponse> login(@Valid @RequestBody UserLoginInDto userLoginInDto) {
+        return ResponseEntity.ok(userService.getUserByLogin(userLoginInDto));
     }
 }

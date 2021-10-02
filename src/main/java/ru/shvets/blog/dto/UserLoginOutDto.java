@@ -1,9 +1,9 @@
-package ru.shvets.blog.api.responses;
+package ru.shvets.blog.dto;
 
 import lombok.Data;
 
 @Data
-public class UserResponse {
+public class UserLoginOutDto {
     private Long id;
     private String name;
     private String photo;

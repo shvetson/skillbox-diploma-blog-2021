@@ -1,20 +1,20 @@
 package ru.shvets.blog.utils;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.shvets.blog.dto.*;
 import ru.shvets.blog.models.*;
+import ru.shvets.blog.repositories.PostRepository;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class MappingUtils {
     private final TimeUtils timeUtils;
-
-    public MappingUtils(TimeUtils timeUtils) {
-        this.timeUtils = timeUtils;
-    }
+    private final PostRepository postRepository;
 
     public SettingsDto mapToSettingsDto(List<GlobalSettings> list) {
         SettingsDto dto = new SettingsDto();
@@ -106,6 +106,7 @@ public class MappingUtils {
         return dto;
     }
 
+    // регистрация нового пользователя
     public User mapToUser(NewUserDto newUserDto){
         User user = new User();
 
@@ -116,5 +117,22 @@ public class MappingUtils {
         user.setCode(newUserDto.getSecretCode());
 
         return user;
+    }
+
+    //  авторизация пользователя (вход)
+    public UserLoginOutDto mapToUserLoginOutDto(User user){
+        UserLoginOutDto dto = new UserLoginOutDto();
+        int moderationCount = postRepository.findByModerationStatus(ModerationStatus.NEW).size();
+        boolean userIsModeration = user.getIsModerator() == 1;
+
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setPhoto(user.getPhoto());
+        dto.setEmail(user.getEmail());
+        dto.setModeration(userIsModeration );
+        dto.setModerationCount(userIsModeration ? moderationCount : 0);
+        dto.setSettings(userIsModeration);
+
+        return dto;
     }
 }
