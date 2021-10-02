@@ -3,11 +3,15 @@ package ru.shvets.blog.controllers;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.shvets.blog.api.responses.ErrorResponse;
+import ru.shvets.blog.dto.NewPostDto;
+import ru.shvets.blog.dto.NewUserDto;
 import ru.shvets.blog.dto.PostCommentDto;
 import ru.shvets.blog.dto.PostCountDto;
 import ru.shvets.blog.models.ModerationStatus;
 import ru.shvets.blog.services.PostService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.text.ParseException;
 
@@ -56,7 +60,6 @@ public class ApiPostController {
                                                                  @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
                                                                  @RequestParam(name = "status", required = false, defaultValue = "NEW") ModerationStatus status) {
         //NEW, ACCEPTED, DECLINED
-        //Необходимо доработать авторизацию
         return ResponseEntity.ok(postService.getAllPostByModerationStatus(offset, limit, status));
     }
 
@@ -65,8 +68,12 @@ public class ApiPostController {
                                                                       @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
                                                                       @RequestParam(name = "status", required = false, defaultValue = "") String status) {
         //inactive, pending, declined, published
-        //Необходимо доработать авторизацию
         return ResponseEntity.ok(postService.getAllPostByStatus(offset, limit, status));
+    }
+
+    @PostMapping("")
+    public ResponseEntity<ErrorResponse> addPost(@Valid @RequestBody NewPostDto newPostDto) {
+        return ResponseEntity.ok(postService.addPost(newPostDto));
     }
 
 }

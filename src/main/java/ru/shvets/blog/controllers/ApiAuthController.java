@@ -1,6 +1,7 @@
 package ru.shvets.blog.controllers;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,6 @@ import ru.shvets.blog.services.CaptchaService;
 import ru.shvets.blog.services.CheckService;
 import ru.shvets.blog.services.InitService;
 import ru.shvets.blog.services.UserService;
-import ru.shvets.blog.utils.MappingUtils;
 
 import javax.validation.Valid;
 

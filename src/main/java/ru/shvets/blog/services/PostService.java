@@ -1,14 +1,14 @@
 package ru.shvets.blog.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.shvets.blog.dto.PostCommentDto;
-import ru.shvets.blog.dto.PostCountDto;
-import ru.shvets.blog.dto.PostDto;
+import ru.shvets.blog.api.responses.ErrorResponse;
+import ru.shvets.blog.components.MapSessions;
+import ru.shvets.blog.dto.*;
 import ru.shvets.blog.exceptions.NoSuchPostException;
 import ru.shvets.blog.models.ModerationStatus;
 import ru.shvets.blog.models.Post;
@@ -25,19 +25,14 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Service
+@Slf4j
+@AllArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final MappingUtils mappingUtils;
     private final HttpSession httpSession;
-
-    @Autowired
-    public PostService(PostRepository postRepository, UserRepository userRepository, MappingUtils mappingUtils, HttpSession httpSession) {
-        this.postRepository = postRepository;
-        this.userRepository = userRepository;
-        this.mappingUtils = mappingUtils;
-        this.httpSession = httpSession;
-    }
+    private final MapSessions mapSessions;
 
     public Sort sort(String mode) {
         switch (mode) {
@@ -132,8 +127,10 @@ public class PostService {
             throw new NoSuchPostException("Записи с id=" + postId + " в базе данных нет.");
         }
 
-        long userId = (long) httpSession.getAttribute("user");
-        if (userId != 0) {
+        String sessionId = httpSession.getId();
+        Long userId = mapSessions.getUserId(sessionId);
+
+        if (userId != null) {
             User user = userRepository.findUserById(userId);
 
             if (user.getIsModerator() != 1 & post.getUser().getId() != userId) {
@@ -151,19 +148,61 @@ public class PostService {
     }
 
     public PostCountDto getAllPostByModerationStatus(int offset, int limit, ModerationStatus moderationStatus) {
-        return response(postRepository.findAllByIsActiveAndModerationStatus((byte) 1, moderationStatus, PageRequest.of(offset, limit, sort("recent"))));
+        String sessionId = httpSession.getId();
+        Long userId = mapSessions.getUserId(sessionId);
+
+        return response(postRepository.findAllByIsActiveAndModerationStatusAndUserId((byte) 1,
+                moderationStatus,
+                userId,
+                PageRequest.of(offset, limit, sort("recent"))));
     }
 
     public PostCountDto getAllPostByStatus(int offset, int limit, String status) {
+        String sessionId = httpSession.getId();
+        Long userId = mapSessions.getUserId(sessionId);
+
         switch (status) {
             case "pending":
-                return response(postRepository.findAllByIsActiveAndModerationStatus((byte) 1, ModerationStatus.NEW, PageRequest.of(offset, limit, sort("recent"))));
+                return response(postRepository.findAllByIsActiveAndModerationStatusAndUserId((byte) 1,
+                        ModerationStatus.NEW,
+                        userId,
+                        PageRequest.of(offset, limit, sort("recent"))));
             case "declined":
-                return response(postRepository.findAllByIsActiveAndModerationStatus((byte) 1, ModerationStatus.DECLINED, PageRequest.of(offset, limit, sort("recent"))));
+                return response(postRepository.findAllByIsActiveAndModerationStatusAndUserId((byte) 1,
+                        ModerationStatus.DECLINED,
+                        userId,
+                        PageRequest.of(offset, limit, sort("recent"))));
             case "published":
-                return response(postRepository.findAllByIsActiveAndModerationStatus((byte) 1, ModerationStatus.ACCEPTED, PageRequest.of(offset, limit, sort("recent"))));
+                return response(postRepository.findAllByIsActiveAndModerationStatusAndUserId((byte) 1,
+                        ModerationStatus.ACCEPTED,
+                        userId,
+                        PageRequest.of(offset, limit, sort("recent"))));
             default:
-                return response(postRepository.findAllByIsActiveAndModerationStatus((byte) 0, null, PageRequest.of(offset, limit, sort("recent"))));
+                return response(postRepository.findAllByIsActiveAndModerationStatusAndUserId((byte) 0,
+                        null,
+                        userId,
+                        PageRequest.of(offset, limit, sort("recent"))));
         }
+    }
+
+    // добавление поста (с проверкой на ввод)
+    public ErrorResponse addPost(NewPostDto newPostDto) {
+        Post post = mappingUtils.mapNewPostDtoToPost(newPostDto);
+
+        String sessionId = httpSession.getId();
+        Long userId = mapSessions.getUserId(sessionId);
+
+        if (userId == null) {
+            throw new IllegalArgumentException("Пользователя с id=" + userId + " в базе данных нет.");
+        }
+        User user = userRepository.findUserById(userId);
+        post.setUser(user);
+
+        ErrorResponse response = new ErrorResponse();
+//        log.info("Test");
+        postRepository.save(post);
+        response.setResult(true);
+        response.setErrors(null);
+        return response;
     }
 }

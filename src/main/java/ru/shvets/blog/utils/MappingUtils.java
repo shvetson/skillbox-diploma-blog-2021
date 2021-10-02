@@ -1,20 +1,27 @@
 package ru.shvets.blog.utils;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.shvets.blog.components.MapSessions;
 import ru.shvets.blog.dto.*;
 import ru.shvets.blog.models.*;
 import ru.shvets.blog.repositories.PostRepository;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class MappingUtils {
     private final TimeUtils timeUtils;
     private final PostRepository postRepository;
+    private final HttpSession httpSession;
+    private final MapSessions mapSessions;
 
     public SettingsDto mapToSettingsDto(List<GlobalSettings> list) {
         SettingsDto dto = new SettingsDto();
@@ -56,7 +63,7 @@ public class MappingUtils {
         PostDto dto = new PostDto();
 
         dto.setId(post.getId());
-        dto.setTimestamp(post.getTime().getTime()/ 1000 - timeUtils.getSecondsOffSet());
+        dto.setTimestamp(post.getTime().getTime() / 1000 - timeUtils.getSecondsOffSet());
         dto.setUser(mapToUserShortDto(post.getUser()));
         dto.setTitle(post.getTitle());
         dto.setAnnounce(post.getText().substring(0, Math.min(post.getText().length(), 150)).concat(" ..."));
@@ -107,7 +114,7 @@ public class MappingUtils {
     }
 
     // регистрация нового пользователя
-    public User mapToUser(NewUserDto newUserDto){
+    public User mapToUser(NewUserDto newUserDto) {
         User user = new User();
 
         user.setRegTime(new Date());
@@ -120,7 +127,7 @@ public class MappingUtils {
     }
 
     //  авторизация пользователя (вход)
-    public UserLoginOutDto mapToUserLoginOutDto(User user){
+    public UserLoginOutDto mapToUserLoginOutDto(User user) {
         UserLoginOutDto dto = new UserLoginOutDto();
         int moderationCount = postRepository.findByModerationStatus(ModerationStatus.NEW).size();
         boolean userIsModeration = user.getIsModerator() == 1;
@@ -129,10 +136,23 @@ public class MappingUtils {
         dto.setName(user.getName());
         dto.setPhoto(user.getPhoto());
         dto.setEmail(user.getEmail());
-        dto.setModeration(userIsModeration );
+        dto.setModeration(userIsModeration);
         dto.setModerationCount(userIsModeration ? moderationCount : 0);
         dto.setSettings(userIsModeration);
 
         return dto;
+    }
+
+    public Post mapNewPostDtoToPost(NewPostDto newPostDto) {
+        Post post = new Post();
+
+        post.setTime(new Date());
+        post.setIsActive(newPostDto.getActive());
+        post.setTitle(newPostDto.getTitle());
+        post.setModerationStatus(ModerationStatus.NEW);
+        post.setText(newPostDto.getText());
+        //post.setTagList(Arrays.stream(newPostDto.getTags()).collect(Collectors.toList()));
+
+        return post;
     }
 }
