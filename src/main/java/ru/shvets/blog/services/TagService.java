@@ -5,15 +5,18 @@ import org.springframework.stereotype.Service;
 import ru.shvets.blog.api.responses.TagResponse;
 import ru.shvets.blog.models.ModerationStatus;
 import ru.shvets.blog.models.Tag;
+import ru.shvets.blog.models.Tag2Post;
+import ru.shvets.blog.repositories.Tag2PostRepository;
 import ru.shvets.blog.repositories.TagRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
 @AllArgsConstructor
+@Service
 public class TagService {
     private final TagRepository tagRepository;
+    private final Tag2PostRepository tag2PostRepository;
 
     public Map<String, Object> getAllTags(String query) {
         Map<String, Object> response = new HashMap<>();
@@ -59,5 +62,17 @@ public class TagService {
                 collect(Collectors.toList()));
 
         return response;
+    }
+
+    public Tag findTagByName(String name){
+        return tagRepository.findTagByName(name);
+    }
+
+    public Tag save(Tag tag){
+        return tagRepository.save(tag);
+    }
+
+    public Tag2Post save(Tag2Post tag2Post){
+        return tag2PostRepository.save(tag2Post);
     }
 }

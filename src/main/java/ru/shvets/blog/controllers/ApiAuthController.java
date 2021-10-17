@@ -1,7 +1,6 @@
 package ru.shvets.blog.controllers;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +11,6 @@ import ru.shvets.blog.dto.NewUserDto;
 import ru.shvets.blog.dto.UserLoginInDto;
 import ru.shvets.blog.services.CaptchaService;
 import ru.shvets.blog.services.CheckService;
-import ru.shvets.blog.services.InitService;
 import ru.shvets.blog.services.UserService;
 
 import javax.validation.Valid;
@@ -23,18 +21,12 @@ import javax.validation.Valid;
 @RequestMapping("/api/auth")
 public class ApiAuthController {
     private final CheckService checkService;
-    private final InitService initService;
     private final CaptchaService captchaService;
     private final UserService userService;
 
     @GetMapping("/check")
     public CheckResponse check() {
-        return checkService.getUser(initService.authId());
-    }
-
-    @GetMapping("/check/users/{id}")
-    public CheckResponse getUser(@PathVariable long id) {
-        return checkService.getUser(id);
+        return checkService.getUser();
     }
 
     @GetMapping("/captcha")

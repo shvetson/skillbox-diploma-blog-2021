@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
     List<Tag> findByNameStartingWithIgnoreCase(String name);
+    Tag findTagByName(String name);
+    Tag save(Tag tag);
 }

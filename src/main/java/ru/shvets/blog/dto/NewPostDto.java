@@ -1,23 +1,18 @@
 package ru.shvets.blog.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.shvets.blog.models.Tag;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.*;
-import java.util.List;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class NewPostDto {
-    @JsonProperty("user_id")
-    private Long userId;
-    @Temporal(TemporalType.TIMESTAMP) //!
+    @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private long timestamp;
 
@@ -29,7 +24,7 @@ public class NewPostDto {
     @Size(min = 3, message = "Наименование заголовка слишком короткое (не менее 3 символов)")
     private String title;
 
-    //@NotEmpty(message = "Необходимо указать минимум  один тэг")
+    @NotEmpty(message = "Необходимо указать минимум  один тэг")
     String[] tags;
 
     @NotBlank (message = "Нет текста")

@@ -1,6 +1,7 @@
 package ru.shvets.blog.services;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.shvets.blog.api.responses.CheckResponse;
 import ru.shvets.blog.api.responses.ErrorResponse;
@@ -13,8 +14,9 @@ import ru.shvets.blog.utils.MappingUtils;
 
 import javax.servlet.http.HttpSession;
 
-@Repository
 @AllArgsConstructor
+@Slf4j
+@Repository
 public class UserService {
     private final UserRepository userRepository;
     private final MappingUtils mappingUtils;
@@ -43,8 +45,11 @@ public class UserService {
             checkResponse.setUserLoginOutDto(mappingUtils.mapToUserLoginOutDto(user));
 
             String sessionId = httpSession.getId();
-            Long userId = mapSessions.getUserId(sessionId);
+            Long userId = user.getId();
             mapSessions.addData(sessionId, userId);
+
+            log.info("Запись в лист сессий внесена");
+            log.info("ID  пользователя - " + userId + ", ID сессии - " + sessionId);
         } else {
             checkResponse.setResult(false);
             checkResponse.setUserLoginOutDto(null);

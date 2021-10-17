@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/blog?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
     username: root
-    password: root
+    password: 123456789
   jpa:
     hibernate:
       ddl-auto: none
@@ -17,8 +17,6 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     enabled: true
-#  mvc:
-#    throw-exception-if-no-handler-found: true
 blog:
   title: DevPub
   subtitle: Рассказы разработчиков

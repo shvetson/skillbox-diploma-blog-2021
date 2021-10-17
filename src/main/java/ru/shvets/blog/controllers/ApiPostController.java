@@ -1,6 +1,7 @@
 package ru.shvets.blog.controllers;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.shvets.blog.api.responses.ErrorResponse;
@@ -17,7 +18,7 @@ import java.text.ParseException;
 
 @RestController
 @AllArgsConstructor
-
+@Slf4j
 @RequestMapping("/api/post")
 public class ApiPostController {
     private final PostService postService;
@@ -76,4 +77,8 @@ public class ApiPostController {
         return ResponseEntity.ok(postService.addPost(newPostDto));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ErrorResponse> updatePost(@PathVariable(name = "id") @Min(1) Long id, @Valid @RequestBody NewPostDto newPostDto){
+        return ResponseEntity.ok(postService.updatePost(id, newPostDto));
+    }
 }

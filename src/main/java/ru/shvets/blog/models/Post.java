@@ -32,7 +32,7 @@ public class Post implements Serializable {
     @JoinColumn (name = "moderator_id")
     private User moderator;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -61,7 +61,7 @@ public class Post implements Serializable {
 //    private List<User> userListVotes;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    List<PostVote> listVotes = new ArrayList<>();
+    private List<PostVote> listVotes = new ArrayList<>();
 
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "post_comments",
@@ -70,5 +70,5 @@ public class Post implements Serializable {
 //    private List<User> userListComments;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    List<PostComment> listComments = new ArrayList<>();
+    private List<PostComment> listComments = new ArrayList<>();
 }

@@ -1,7 +1,6 @@
 package ru.shvets.blog.services;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.stereotype.Service;
 import ru.shvets.blog.api.responses.CheckResponse;
 import ru.shvets.blog.components.MapSessions;
@@ -11,26 +10,29 @@ import ru.shvets.blog.utils.MappingUtils;
 
 import javax.servlet.http.HttpSession;
 
-@Service
 @AllArgsConstructor
+@Service
 public class CheckService {
     private final UserRepository userRepository;
     private final HttpSession httpSession;
     private final MappingUtils mappingUtils;
     private final MapSessions mapSessions;
 
-    public CheckResponse getUser(long id) {
+    public CheckResponse getUser() {
         CheckResponse checkResponse = new CheckResponse();
+        String sessionId = httpSession.getId();
+        User user;
 
-        User user = userRepository.findById(id).orElse(null);
+        if (mapSessions.isEmpty()) {
+            user = null;
+        } else {
+            Long userId = mapSessions.getUserId(sessionId);
+            user = userRepository.findById(userId).orElse(null);
+        }
 
         if (user != null) {
             checkResponse.setResult(true);
             checkResponse.setUserLoginOutDto(mappingUtils.mapToUserLoginOutDto(user));
-
-            String sessionId = httpSession.getId();
-            Long userId = id;
-            mapSessions.addData(sessionId, userId);
         } else {
             checkResponse.setResult(false);
             checkResponse.setUserLoginOutDto(null);

@@ -48,7 +48,7 @@ public class User implements Serializable {
     @Column(columnDefinition = "text")
     private String photo;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Post> posts;
 

@@ -10,12 +10,11 @@ import ru.shvets.blog.api.responses.ErrorResponse;
 import ru.shvets.blog.components.MapSessions;
 import ru.shvets.blog.dto.*;
 import ru.shvets.blog.exceptions.NoSuchPostException;
-import ru.shvets.blog.models.ModerationStatus;
-import ru.shvets.blog.models.Post;
-import ru.shvets.blog.models.User;
+import ru.shvets.blog.models.*;
 import ru.shvets.blog.repositories.PostRepository;
 import ru.shvets.blog.repositories.UserRepository;
 import ru.shvets.blog.utils.MappingUtils;
+import ru.shvets.blog.utils.TimeUtils;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
@@ -23,16 +22,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 @AllArgsConstructor
+@Slf4j
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final TagService tagService;
     private final MappingUtils mappingUtils;
     private final HttpSession httpSession;
     private final MapSessions mapSessions;
+    private final TimeUtils timeUtils;
 
     public Sort sort(String mode) {
         switch (mode) {
@@ -96,7 +98,6 @@ public class PostService {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("years", years);
         response.put("posts", mapDatePostCount);
-
         return response;
     }
 
@@ -185,22 +186,40 @@ public class PostService {
         }
     }
 
-    // добавление поста (с проверкой на ввод)
+    //Добавление поста (с проверкой на ввод)
     public ErrorResponse addPost(NewPostDto newPostDto) {
         Post post = mappingUtils.mapNewPostDtoToPost(newPostDto);
+        long postId = postRepository.save(post).getId();
+        log.info("Добавлен новый пост");
 
-        String sessionId = httpSession.getId();
-        Long userId = mapSessions.getUserId(sessionId);
+        for (String itemTeg : Arrays.stream(newPostDto.getTags()).collect(Collectors.toList())) {
+            Tag tag = tagService.findTagByName(itemTeg);
 
-        if (userId == null) {
-            throw new IllegalArgumentException("Пользователя с id=" + userId + " в базе данных нет.");
+            //Добавление нового тэга в словарь, если его нет
+            if (tag == null) {
+                tag = new Tag();
+                tag.setName(itemTeg);
+                long tagId = tagService.save(tag).getId();
+                log.info("Добавлен новый тэг - " + itemTeg);
+            }
+
+            //Добавление данных в связывающую таблицу Tag2Post
+            Tag2Post tag2Post = new Tag2Post();
+            tag2Post.setPostId(postId);
+            tag2Post.setTagId(tag.getId());
+            tagService.save(tag2Post);
         }
-        User user = userRepository.findUserById(userId);
-        post.setUser(user);
 
         ErrorResponse response = new ErrorResponse();
-//        log.info("Test");
+        response.setResult(true);
+        response.setErrors(null);
+        return response;
+    }
+
+    public ErrorResponse updatePost(Long postId, NewPostDto newPostDto) {
+        Post post = mappingUtils.mapPostDtoUpdateToPost(postId, newPostDto);
         postRepository.save(post);
+        ErrorResponse response = new ErrorResponse();
         response.setResult(true);
         response.setErrors(null);
         return response;
