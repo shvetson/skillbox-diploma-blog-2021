@@ -67,7 +67,7 @@ public class ApiPostController {
     @GetMapping("/moderation")
     public ResponseEntity<PostCountDto> getAllPostsByModerationStatus(@RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
                                                                       @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
-                                                                      @RequestParam(name = "status", required = false, defaultValue = "NEW") ModerationStatus status) {
+                                                                      @RequestParam(name = "status", required = false, defaultValue = "") String status) {
         return ResponseEntity.ok(postService.getAllPostByModerationStatus(offset, limit, status));
     }
 

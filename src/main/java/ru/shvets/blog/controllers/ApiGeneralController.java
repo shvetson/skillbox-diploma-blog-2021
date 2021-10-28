@@ -5,8 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.shvets.blog.api.responses.CommentResponse;
+import ru.shvets.blog.api.responses.ErrorResponse;
 import ru.shvets.blog.api.responses.InitResponse;
 import ru.shvets.blog.dto.NewCommentDto;
+import ru.shvets.blog.dto.PostStatusDto;
 import ru.shvets.blog.dto.SettingsDto;
 import ru.shvets.blog.services.PostService;
 import ru.shvets.blog.services.SettingsService;
@@ -54,5 +56,12 @@ public class ApiGeneralController {
     @PostMapping("/comment")
     public ResponseEntity<CommentResponse> addComment(@Valid @RequestBody NewCommentDto newCommentDto) throws Exception {
         return ResponseEntity.ok(postService.addComment(newCommentDto));
+    }
+
+    //Модерация поста
+    // accept, decline
+    @PostMapping("/moderation")
+    public ResponseEntity<ErrorResponse> approvePost(@RequestBody PostStatusDto postStatusDto){
+        return ResponseEntity.ok(postService.updateStatusPost(postStatusDto));
     }
 }

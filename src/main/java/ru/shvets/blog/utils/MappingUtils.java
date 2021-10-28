@@ -182,4 +182,11 @@ public class MappingUtils {
         postComment.setText(newCommentDto.getText());
         return postComment;
     }
+
+    public Post mapPostStatusDtoToPost(PostStatusDto postStatusDto) {
+        Post post = postRepository.getPostById(postStatusDto.getPostId());
+        post.setModerationStatus(postStatusDto.getDecision().equals("accept") ? ModerationStatus.ACCEPTED : ModerationStatus.DECLINED);
+        post.setModerator(getUserFromListSessions());
+        return post;
+    }
 }

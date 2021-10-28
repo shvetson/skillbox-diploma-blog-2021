@@ -150,14 +150,24 @@ public class PostService {
         }
     }
 
-    public PostCountDto getAllPostByModerationStatus(int offset, int limit, ModerationStatus moderationStatus) {
-        String sessionId = httpSession.getId();
-        Long userId = mapSessions.getUserId(sessionId);
-
-        return response(postRepository.findAllByIsActiveAndModerationStatusAndUserId((byte) 1,
-                moderationStatus,
-                userId,
-                PageRequest.of(offset, limit, sort("recent"))));
+    public PostCountDto getAllPostByModerationStatus(int offset, int limit, String status) {
+        switch (status) {
+            case "new":
+                return response(postRepository.findAllByIsActiveAndModerationStatusAndModeratorId((byte) 1,
+                        ModerationStatus.NEW,
+                        null,
+                        PageRequest.of(offset, limit, sort("recent"))));
+            case "accepted":
+                return response(postRepository.findAllByIsActiveAndModerationStatusAndModeratorId((byte) 1,
+                        ModerationStatus.ACCEPTED,
+                        mappingUtils.getUserFromListSessions().getId(),
+                        PageRequest.of(offset, limit, sort("recent"))));
+            default:
+                return response(postRepository.findAllByIsActiveAndModerationStatusAndModeratorId((byte) 1,
+                        ModerationStatus.DECLINED,
+                        mappingUtils.getUserFromListSessions().getId(),
+                        PageRequest.of(offset, limit, sort("recent"))));
+        }
     }
 
     public PostCountDto getAllPostByStatus(int offset, int limit, String status) {
@@ -233,7 +243,20 @@ public class PostService {
         log.info("Добавлены комментарии к  посту");
         return response;
     }
+    //При добавлении комментария возможно надо включить проверку - если автор поста, то комментарии не может оставлять, только комментарии на комментарии других (в ТЗ нет)
 
-    //TODO при добавлении комментария возможно надо включить проверку - если автор поста, то комментарии не может оставлять, только комментарии на комментарии других (в ТЗ нет)
-
+    public ErrorResponse updateStatusPost(PostStatusDto postStatusDto) {
+        ErrorResponse response = new ErrorResponse();
+        if (mappingUtils.getUserFromListSessions().getIsModerator() == 1) {
+            Post post = mappingUtils.mapPostStatusDtoToPost(postStatusDto);
+            postRepository.save(post);
+            response.setResult(true);
+            response.setErrors(null);
+            log.info("Обновлен статус поста");
+        } else {
+            response.setResult(false);
+            response.setErrors(null);
+        }
+        return response;
+    }
 }
