@@ -6,15 +6,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.shvets.blog.api.responses.CommentResponse;
 import ru.shvets.blog.api.responses.ErrorResponse;
 import ru.shvets.blog.components.MapSessions;
 import ru.shvets.blog.dto.*;
 import ru.shvets.blog.exceptions.NoSuchPostException;
 import ru.shvets.blog.models.*;
+import ru.shvets.blog.repositories.PostCommentRepository;
 import ru.shvets.blog.repositories.PostRepository;
 import ru.shvets.blog.repositories.UserRepository;
 import ru.shvets.blog.utils.MappingUtils;
-import ru.shvets.blog.utils.TimeUtils;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
@@ -29,12 +30,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PostService {
     private final PostRepository postRepository;
+    private final PostCommentRepository postCommentRepository;
     private final UserRepository userRepository;
     private final TagService tagService;
     private final MappingUtils mappingUtils;
     private final HttpSession httpSession;
     private final MapSessions mapSessions;
-    private final TimeUtils timeUtils;
 
     public Sort sort(String mode) {
         switch (mode) {
@@ -226,5 +227,13 @@ public class PostService {
         return response;
     }
 
-    // TODO необходимо проверить 
+    public CommentResponse addComment(NewCommentDto newCommentDto) throws Exception {
+        CommentResponse response = new CommentResponse();
+        response.setCommentID(postCommentRepository.save(mappingUtils.mapNewCommentDtoToPostComment(newCommentDto)).getId());
+        log.info("Добавлены комментарии к  посту");
+        return response;
+    }
+
+    //TODO при добавлении комментария возможно надо включить проверку - если автор поста, то комментарии не может оставлять, только комментарии на комментарии других (в ТЗ нет)
+
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.shvets.blog.components.MapSessions;
 import ru.shvets.blog.dto.*;
 import ru.shvets.blog.models.*;
+import ru.shvets.blog.repositories.PostCommentRepository;
 import ru.shvets.blog.repositories.PostRepository;
 import ru.shvets.blog.repositories.UserRepository;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class MappingUtils {
     private final TimeUtils timeUtils;
     private final PostRepository postRepository;
+    private final PostCommentRepository postCommentRepository;
     private final UserRepository userRepository;
     private final HttpSession httpSession;
     private final MapSessions mapSessions;
@@ -169,5 +171,15 @@ public class MappingUtils {
             throw new IllegalArgumentException("Пользователя с id=" + userId + " нет");
         }
         return user;
+    }
+
+    public PostComment mapNewCommentDtoToPostComment(NewCommentDto newCommentDto) {
+        PostComment postComment = new PostComment();
+        postComment.setPost(postRepository.getPostById(newCommentDto.getPostId()));
+        postComment.setParent(newCommentDto.getParentId() != null ? postCommentRepository.getById(newCommentDto.getParentId()) : null);
+        postComment.setUser(getUserFromListSessions());
+        postComment.setTime(new Date());
+        postComment.setText(newCommentDto.getText());
+        return postComment;
     }
 }
