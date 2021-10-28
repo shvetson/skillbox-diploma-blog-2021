@@ -1,8 +1,14 @@
 spring:
+  # параметры для доступа к базе данных
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/blog?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
     username: root
-    password: 123456789
+    password: root
+  # параметры для загрузки файлов на сервер
+  servlet:
+    multipart:
+      max-file-size: 128KB
+      max-request-size: 128KB
   jpa:
     hibernate:
       ddl-auto: none
@@ -17,6 +23,7 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     enabled: true
+# инфо приложения
 blog:
   title: DevPub
   subtitle: Рассказы разработчиков
@@ -27,5 +34,5 @@ blog:
 captcha:
   timeHours: 1
   lengthCaptcha: 5
-
-
+web:
+  upload-path: C:/Users/Shvet/Desktop/Blog/Upload

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import ru.shvets.blog.api.responses.ErrorResponse;
 
 import java.util.LinkedHashMap;
@@ -40,6 +40,20 @@ public class GlobalExceptionHandler {
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             error.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
+
+        response.setResult(false);
+        response.setErrors(error);
+        return response;
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    ErrorResponse onMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        ErrorResponse response = new ErrorResponse();
+
+        Map<String, Object> error = new LinkedHashMap<>();
+        error.put("image", "Размер файла превышает допустимый размер");
 
         response.setResult(false);
         response.setErrors(error);

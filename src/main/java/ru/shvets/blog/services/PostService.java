@@ -57,15 +57,16 @@ public class PostService {
     }
 
     public PostCountDto getAllPosts(int offset, int limit, String mode) {
-        if (mode.equals("popular")) {
-            return response(postRepository.
-                    findAllIsActiveAndIsAcceptedAndComments(PageRequest.of(offset, limit, sort(mode))));
-        } else if (mode.equals("best")) {
-            return response(postRepository.
-                    findAllIsActiveAndIsAcceptedAndVotes(PageRequest.of(offset, limit, sort(mode))));
-        } else {
-            return response(postRepository.
-                    findAllIsActiveAndIsAccepted(PageRequest.of(offset, limit, sort(mode))));
+        switch (mode) {
+            case "popular":
+                return response(postRepository.
+                        findAllIsActiveAndIsAcceptedAndComments(PageRequest.of(offset, limit, sort(mode))));
+            case "best":
+                return response(postRepository.
+                        findAllIsActiveAndIsAcceptedAndVotes(PageRequest.of(offset, limit, sort(mode))));
+            default:
+                return response(postRepository.
+                        findAllIsActiveAndIsAccepted(PageRequest.of(offset, limit, sort(mode))));
         }
     }
 
@@ -224,4 +225,6 @@ public class PostService {
         response.setErrors(null);
         return response;
     }
+
+    // TODO необходимо проверить 
 }
