@@ -1,5 +1,6 @@
 package ru.shvets.blog.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +11,16 @@ import ru.shvets.blog.api.responses.InitResponse;
 import ru.shvets.blog.dto.NewCommentDto;
 import ru.shvets.blog.dto.PostStatusDto;
 import ru.shvets.blog.dto.SettingsDto;
+import ru.shvets.blog.dto.UserUpdatedDto;
 import ru.shvets.blog.services.PostService;
 import ru.shvets.blog.services.SettingsService;
+import ru.shvets.blog.services.UserService;
 import ru.shvets.blog.utils.FileUtils;
 
 import javax.validation.Valid;
 
 @RestController
+@Slf4j
 @RequestMapping("/api")
 public class ApiGeneralController {
     @Value("${web.upload-path}")
@@ -26,12 +30,14 @@ public class ApiGeneralController {
     private final SettingsService settingsService;
     private final FileUtils fileUtils;
     private final PostService postService;
+    private final UserService userService;
 
-    public ApiGeneralController(InitResponse initResponse, SettingsService settingsService, FileUtils fileUtils, PostService postService) {
+    public ApiGeneralController(InitResponse initResponse, SettingsService settingsService, FileUtils fileUtils, PostService postService, UserService userService) {
         this.initResponse = initResponse;
         this.settingsService = settingsService;
         this.fileUtils = fileUtils;
         this.postService = postService;
+        this.userService = userService;
     }
 
     //Общие данные блога
@@ -49,7 +55,7 @@ public class ApiGeneralController {
     //Загрузка изображений
     @PostMapping("/image")
     public String uploadFile(@RequestParam(name = "file", required = true) MultipartFile multipartFile) throws Exception {
-        return  fileUtils.uploadFile(multipartFile, path, 3, 2);
+        return fileUtils.uploadFile(multipartFile, path, 3, 2);
     }
 
     //Отправка комментариев к посту
@@ -61,7 +67,14 @@ public class ApiGeneralController {
     //Модерация поста
     // accept, decline
     @PostMapping("/moderation")
-    public ResponseEntity<ErrorResponse> approvePost(@RequestBody PostStatusDto postStatusDto){
+    public ResponseEntity<ErrorResponse> approvePost(@RequestBody PostStatusDto postStatusDto) {
         return ResponseEntity.ok(postService.updateStatusPost(postStatusDto));
+    }
+
+    //Редактирование моего профиля
+    // проверка не работает?
+    @PostMapping("/profile/my")
+    public ResponseEntity<ErrorResponse> updateProfile(@ModelAttribute UserUpdatedDto userUpdatedDto) throws Exception {
+        return ResponseEntity.ok(userService.updateProfile(userUpdatedDto));
     }
 }

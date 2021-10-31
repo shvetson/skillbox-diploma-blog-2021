@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class NewUserDto {
+public class  NewUserDto {
     @NotBlank(message = "Убедитесь, что поле не пустое")
     @Email(message = "Убедитесь, что адрес электронной почты действителен")
     @IsEmail(message = "Этот e-mail уже зарегистрирован")

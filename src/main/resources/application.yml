@@ -23,6 +23,8 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     enabled: true
+#    serialization:
+#      FAIL_ON_EMPTY_BEANS: false
 # инфо приложения
 blog:
   title: DevPub
@@ -35,4 +37,5 @@ captcha:
   timeHours: 1
   lengthCaptcha: 5
 web:
-  upload-path: C:/Users/Shvet/Desktop/Blog/Upload
+  upload-path: c:/users/shvet/desktop/blog/upload
+  photo-path: c:/users/shvet/desktop/blog/users/photos

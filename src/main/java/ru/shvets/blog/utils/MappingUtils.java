@@ -11,6 +11,7 @@ import ru.shvets.blog.repositories.PostRepository;
 import ru.shvets.blog.repositories.UserRepository;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -20,12 +21,13 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Slf4j
 public class MappingUtils {
-    private final TimeUtils timeUtils;
     private final PostRepository postRepository;
     private final PostCommentRepository postCommentRepository;
     private final UserRepository userRepository;
     private final HttpSession httpSession;
     private final MapSessions mapSessions;
+    private final TimeUtils timeUtils;
+    private final FileUtils fileUtils;
 
     public SettingsDto mapToSettingsDto(List<GlobalSettings> list) {
         SettingsDto dto = new SettingsDto();
@@ -143,7 +145,7 @@ public class MappingUtils {
         return post;
     }
 
-    public Post mapPostDtoUpdateToPost(Long postId, NewPostDto newPostDto){
+    public Post mapPostDtoUpdateToPost(Long postId, NewPostDto newPostDto) {
         Post post = postRepository.getPostById(postId);
         User user = getUserFromListSessions();
 
@@ -158,7 +160,7 @@ public class MappingUtils {
         return post;
     }
 
-    public User getUserFromListSessions(){
+    public User getUserFromListSessions() {
         String sessionId = httpSession.getId();
         Long userId = mapSessions.getUserId(sessionId);
 
@@ -188,5 +190,50 @@ public class MappingUtils {
         post.setModerationStatus(postStatusDto.getDecision().equals("accept") ? ModerationStatus.ACCEPTED : ModerationStatus.DECLINED);
         post.setModerator(getUserFromListSessions());
         return post;
+    }
+
+    public User mapUserUpdatedDtoToUser(UserUpdatedDto userUpdatedDto) throws IOException {
+        User user = getUserFromListSessions();
+        boolean update = false;
+        log.info(user.toString());
+        log.info(userUpdatedDto.toString());
+
+        if (userUpdatedDto.getName() != null && !userUpdatedDto.getName().equals(user.getName())) {
+            user.setName(userUpdatedDto.getName());
+            log.info("Пользователь сменил имя");
+            update = true;
+        }
+        if (userUpdatedDto.getEmail() != null && !userUpdatedDto.getEmail().equals(user.getEmail())) {
+            user.setEmail(userUpdatedDto.getEmail());
+            log.info("Пользователь сменил email");
+            update = true;
+        }
+
+        if (userUpdatedDto.getPassword() != null) {
+            user.setPassword(userUpdatedDto.getPassword());
+            log.info("Пользователь сменил пароль");
+            update = true;
+        }
+
+        if (userUpdatedDto.getRemovePhoto() == 1 && userUpdatedDto.getPhoto() == null) {
+            user.setPhoto(null);
+            log.info("Пользователь удалил фото");
+            update = true;
+        } else if (userUpdatedDto.getPhoto() != null) {
+            String result = fileUtils.resizeImage(userUpdatedDto.getPhoto());
+
+            if (result != null) {
+                user.setPhoto(result);
+                log.info("Пользователь сменил фото");
+                update = true;
+            }
+        }
+
+        if (update) {
+            log.info("Профиль пользователя был обновлен");
+        } else {
+            log.error("Профиль пользователя не изменен");
+        }
+        return user;
     }
 }

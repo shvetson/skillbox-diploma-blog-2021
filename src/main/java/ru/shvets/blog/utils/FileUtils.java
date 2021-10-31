@@ -1,16 +1,25 @@
 package ru.shvets.blog.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
 @Slf4j
 public class FileUtils {
 //TODO необходимо написать методы по работе с фото пользователей при регистрации нового пользователя
+
+    @Value("${web.photo-path}")
+    private String photoDir;
+    final int HEIGHT_IMAGE = 36;
+    final int WIDTH_IMAGE = 36;
 
     public String uploadFile(MultipartFile multipartFile, String pathUpload, int levelSub, int lengthNameSub) throws Exception {
         if (multipartFile.isEmpty()) {
@@ -69,5 +78,40 @@ public class FileUtils {
 
     private String getUUID() {
         return UUID.randomUUID().toString();
+    }
+
+    public String resizeImage(MultipartFile multipartFile) throws IOException {
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            return null;
+        }
+        BufferedImage image = ImageIO.read(multipartFile.getInputStream());
+        //Проверка размера файла, если больше 36х36, то обрезка
+        if (image.getHeight() > HEIGHT_IMAGE || image.getWidth() > WIDTH_IMAGE) {
+
+            BufferedImage newImage = new BufferedImage(
+                    WIDTH_IMAGE, HEIGHT_IMAGE, BufferedImage.TYPE_INT_RGB
+            );
+
+            int widthStep = image.getWidth() / WIDTH_IMAGE;
+            int heightStep = image.getHeight() / HEIGHT_IMAGE;
+
+            for (int x = 0; x < WIDTH_IMAGE; x++) {
+                for (int y = 0; y < HEIGHT_IMAGE; y++) {
+                    int rgb = image.getRGB(x * widthStep, y * heightStep);
+                    newImage.setRGB(x, y, rgb);
+                }
+            }
+
+            if (!photoDir.endsWith("/")) {
+                photoDir = photoDir.concat("/");
+            }
+            String photoName = getUUID().replace("-", "") + ".jpg";
+            String fileUrl = photoDir.concat(photoName);
+
+            File newFile = new File(fileUrl);
+            ImageIO.write(newImage, "jpg", newFile);
+            return newFile.getAbsolutePath();
+        }
+        return null;
     }
 }
