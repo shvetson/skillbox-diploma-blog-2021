@@ -31,4 +31,14 @@ public class PostVote implements Serializable {
 
     @Column(nullable = false)
     private byte value;
+
+    @PrePersist
+    void onCreate(){
+        this.setTime(new Date());
+    }
+
+    @PreUpdate
+    void onUpdate(){
+        this.setTime(new Date());
+    }
 }

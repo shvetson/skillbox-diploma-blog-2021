@@ -19,4 +19,5 @@ public interface PostVoteRepository extends JpaRepository<PostVote, Long> {
     Integer countPostVotesByUserIdAndValue(long userId, byte value);
 
     Integer countPostVotesByValueEquals(byte value);
+    PostVote findPostVoteByUserIdAndPostId(Long userId, Long postId);
 }

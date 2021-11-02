@@ -285,8 +285,8 @@ public class PostService {
         Integer dislikesCount;
         Integer likesCount;
         StatDto dto = new StatDto();
-        boolean moderator = mappingUtils.getUserFromListSessions().getIsModerator() == 1;
-        boolean statPublic = settingsRepository.getValueByCode().equals("true");
+//        boolean moderator = mappingUtils.getUserFromListSessions().getIsModerator() == 1;
+//        boolean statPublic = settingsRepository.getValueByCode().equals("true");
 
         List<Object[]> resultList = postRepository.countAndSumAndMinDateInPosts();
         mapDataFromQueryToDto(resultList, dto);

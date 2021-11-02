@@ -6,11 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.shvets.blog.api.responses.ErrorResponse;
 import ru.shvets.blog.dto.NewPostDto;
-import ru.shvets.blog.dto.NewUserDto;
 import ru.shvets.blog.dto.PostCommentDto;
 import ru.shvets.blog.dto.PostCountDto;
-import ru.shvets.blog.models.ModerationStatus;
+import ru.shvets.blog.dto.PostJustIdDto;
+import ru.shvets.blog.models.Post;
 import ru.shvets.blog.services.PostService;
+import ru.shvets.blog.services.PostVoteService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -22,6 +23,7 @@ import java.text.ParseException;
 @RequestMapping("/api/post")
 public class ApiPostController {
     private final PostService postService;
+    private final PostVoteService postVoteService;
 
     //Список постов
     //recent, popular, best, early
@@ -90,5 +92,17 @@ public class ApiPostController {
     @PutMapping("/{id}")
     public ResponseEntity<ErrorResponse> updatePost(@PathVariable(name = "id") @Min(1) Long id, @Valid @RequestBody NewPostDto newPostDto) {
         return ResponseEntity.ok(postService.updatePost(id, newPostDto));
+    }
+
+    //Лайк поста
+    @PostMapping("/like")
+    public ResponseEntity<ErrorResponse> likePost(@RequestBody PostJustIdDto dto){
+        return ResponseEntity.ok(postVoteService.likePost(dto));
+    }
+
+    //Дизлайк поста
+    @PostMapping("/dislike")
+    public ResponseEntity<ErrorResponse> dislikePost(@RequestBody PostJustIdDto dto){
+        return ResponseEntity.ok(postVoteService.dislikePost(dto));
     }
 }

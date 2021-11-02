@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.Map;
 
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
