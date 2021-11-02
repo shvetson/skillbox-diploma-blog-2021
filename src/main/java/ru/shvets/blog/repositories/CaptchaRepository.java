@@ -13,4 +13,6 @@ public interface CaptchaRepository extends JpaRepository<CaptchaCode, Long> {
     @Transactional
     @Query(nativeQuery = true, value = "delete from captcha_codes where time_to_sec(timediff(now(), time)) > ?1")
     void deleteAllTimeGreaterThanHour(long timePeriod);
+
+    CaptchaCode getCaptchaCodeBySecretCode(String secretCode);
 }

@@ -59,4 +59,32 @@ public class GlobalExceptionHandler {
         response.setErrors(error);
         return response;
     }
+
+    @ExceptionHandler(TimeExpiredException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    ErrorResponse onTimeExpiredException(TimeExpiredException e) {
+        ErrorResponse response = new ErrorResponse();
+
+        Map<String, Object> error = new LinkedHashMap<>();
+        error.put("code", e.getMessage());
+
+        response.setResult(false);
+        response.setErrors(error);
+        return response;
+    }
+
+    @ExceptionHandler(CaptchaException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    ErrorResponse onTimeExpiredException(CaptchaException e) {
+        ErrorResponse response = new ErrorResponse();
+
+        Map<String, Object> error = new LinkedHashMap<>();
+        error.put("captcha", e.getMessage());
+
+        response.setResult(false);
+        response.setErrors(error);
+        return response;
+    }
 }

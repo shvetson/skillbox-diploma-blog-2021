@@ -6,10 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.shvets.blog.api.responses.CheckResponse;
 import ru.shvets.blog.api.responses.ErrorResponse;
-import ru.shvets.blog.dto.CaptchaDto;
-import ru.shvets.blog.dto.NewUserDto;
-import ru.shvets.blog.dto.UserJustEmailDto;
-import ru.shvets.blog.dto.UserLoginInDto;
+import ru.shvets.blog.dto.*;
 import ru.shvets.blog.services.CaptchaService;
 import ru.shvets.blog.services.CheckService;
 import ru.shvets.blog.services.UserService;
@@ -48,5 +45,10 @@ public class ApiAuthController {
     @PostMapping("/restore")
     public ResponseEntity<ErrorResponse> restore(@RequestBody UserJustEmailDto userJustEmailDto){
         return ResponseEntity.ok(userService.restoreUser(userJustEmailDto));
+    }
+    //Изменение пароля
+    @PostMapping("/password")
+    public ResponseEntity<ErrorResponse> updatePassword(@Valid @RequestBody UserPassUpdateDto userPassUpdateDto){
+        return ResponseEntity.ok(userService.updatePassword(userPassUpdateDto));
     }
 }

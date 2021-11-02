@@ -2,16 +2,14 @@ package ru.shvets.blog.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.shvets.blog.api.responses.CommentResponse;
 import ru.shvets.blog.api.responses.ErrorResponse;
 import ru.shvets.blog.api.responses.InitResponse;
-import ru.shvets.blog.dto.NewCommentDto;
-import ru.shvets.blog.dto.PostStatusDto;
-import ru.shvets.blog.dto.SettingsDto;
-import ru.shvets.blog.dto.UserUpdatedDto;
+import ru.shvets.blog.dto.*;
 import ru.shvets.blog.services.PostService;
 import ru.shvets.blog.services.SettingsService;
 import ru.shvets.blog.services.UserService;
@@ -76,5 +74,17 @@ public class ApiGeneralController {
     @PostMapping("/profile/my")
     public ResponseEntity<ErrorResponse> updateProfile(@ModelAttribute UserUpdatedDto userUpdatedDto) throws Exception {
         return ResponseEntity.ok(userService.updateProfile(userUpdatedDto));
+    }
+
+    //Моя статистика
+    @GetMapping("/statistics/my")
+    public ResponseEntity<StatDto> viewStatistics() {
+        return ResponseEntity.ok(postService.getStatistics());
+    }
+
+    //Статистика по всему блогу
+    @GetMapping("/statistics/all")
+    public ResponseEntity<StatDto> viewAllStatistics() {
+        return ResponseEntity.ok(postService.getAllStatistics());
     }
 }

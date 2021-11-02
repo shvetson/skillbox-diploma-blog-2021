@@ -46,4 +46,10 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
     Page<Post> findByIsActiveAndModerationStatusAndTag(String tag, Pageable pageable);
 
     Post getPostById(Long id);
+
+    @Query(nativeQuery = true, value = "select count(id) as postscount, sum(view_count) as viewscount, min(time) firstpublication from posts where user_id = ?1")
+    List<Object[]> countAndSumAndMinDateInPostsByUser(Long userId);
+
+    @Query(nativeQuery = true, value = "select count(id) as postscount, sum(view_count) as viewscount, min(time) firstpublication from posts")
+    List<Object[]> countAndSumAndMinDateInPosts();
 }

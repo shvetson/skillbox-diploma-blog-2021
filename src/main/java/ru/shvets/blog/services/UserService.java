@@ -6,11 +6,12 @@ import org.springframework.stereotype.Repository;
 import ru.shvets.blog.api.responses.CheckResponse;
 import ru.shvets.blog.api.responses.ErrorResponse;
 import ru.shvets.blog.components.MapSessions;
-import ru.shvets.blog.dto.NewUserDto;
-import ru.shvets.blog.dto.UserJustEmailDto;
-import ru.shvets.blog.dto.UserLoginInDto;
-import ru.shvets.blog.dto.UserUpdatedDto;
+import ru.shvets.blog.dto.*;
+import ru.shvets.blog.exceptions.CaptchaException;
+import ru.shvets.blog.exceptions.TimeExpiredException;
+import ru.shvets.blog.models.CaptchaCode;
 import ru.shvets.blog.models.User;
+import ru.shvets.blog.repositories.CaptchaRepository;
 import ru.shvets.blog.repositories.UserRepository;
 import ru.shvets.blog.utils.MappingUtils;
 
@@ -23,6 +24,7 @@ import java.util.UUID;
 @Repository
 public class UserService {
     private final UserRepository userRepository;
+    private final CaptchaRepository captchaRepository;
     private final MappingUtils mappingUtils;
     private final HttpSession httpSession;
     private final MapSessions mapSessions;
@@ -75,7 +77,6 @@ public class UserService {
     }
 
     public ErrorResponse restoreUser(UserJustEmailDto userJustEmailDto) {
-        String URL = "/login/change-password/";
         ErrorResponse response = new ErrorResponse();
 
         if (userJustEmailDto.getEmail() == null) {
@@ -87,13 +88,36 @@ public class UserService {
         User user = userRepository.getUserByEmail(userJustEmailDto.getEmail());
         if (user != null) {
             String hash = UUID.randomUUID().toString().replace("-", "");
-            user.setCode(URL.concat(hash));
+            user.setCode(hash);
             userRepository.save(user);
             log.info("Письмо со ссылкой на восстановление пароля направлено");
             response.setResult(true);
         } else {
             response.setResult(false);
         }
+        response.setErrors(null);
+        return response;
+    }
+
+    public ErrorResponse updatePassword(UserPassUpdateDto userPassUpdateDto) {
+        ErrorResponse response = new ErrorResponse();
+        User user = userRepository.getUserByCode(userPassUpdateDto.getCode());
+        if (user == null) {
+            throw new TimeExpiredException("Ссылка для восстановления пароля устарела");
+        }
+
+        CaptchaCode captchaCode = captchaRepository.getCaptchaCodeBySecretCode(userPassUpdateDto.getCaptchaSecret());
+        if (captchaCode == null) {
+            throw new CaptchaException("Каптча устарела");
+        }
+
+        if (userPassUpdateDto.getCaptcha().equals(captchaCode.getCode())) {
+            user.setPassword(userPassUpdateDto.getPassword());
+            userRepository.save(user);
+        } else {
+            throw new CaptchaException("Код с картинки введен неправильно");
+        }
+        response.setResult(true);
         response.setErrors(null);
         return response;
     }
