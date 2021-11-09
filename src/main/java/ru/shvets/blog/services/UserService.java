@@ -121,4 +121,11 @@ public class UserService {
         response.setErrors(null);
         return response;
     }
+
+    //Выход
+    public ErrorResponse logout(){
+        User user = mappingUtils.getUserFromListSessions();
+        mapSessions.removeUser(mapSessions.getSessionId(user.getId()));
+        return ErrorResponse.of(true, null);
+    }
 }

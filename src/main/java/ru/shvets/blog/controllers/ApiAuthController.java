@@ -51,4 +51,11 @@ public class ApiAuthController {
     public ResponseEntity<ErrorResponse> updatePassword(@Valid @RequestBody UserPassUpdateDto userPassUpdateDto){
         return ResponseEntity.ok(userService.updatePassword(userPassUpdateDto));
     }
+
+    //Выход
+    @GetMapping("/logout")
+    public ResponseEntity<ErrorResponse> logout(){
+        //TODO обновление страницы после выхода
+        return ResponseEntity.ok(userService.logout());
+    }
 }

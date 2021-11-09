@@ -9,7 +9,6 @@ import ru.shvets.blog.dto.NewPostDto;
 import ru.shvets.blog.dto.PostCommentDto;
 import ru.shvets.blog.dto.PostCountDto;
 import ru.shvets.blog.dto.PostJustIdDto;
-import ru.shvets.blog.models.Post;
 import ru.shvets.blog.services.PostService;
 import ru.shvets.blog.services.PostVoteService;
 

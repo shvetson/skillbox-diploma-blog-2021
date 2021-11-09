@@ -73,7 +73,12 @@ public class MapSessions {
     }
 
     //Проверка есть ли зарегистрированные пользователи
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return map.size() == 0;
+    }
+
+    //Удаление сессии из списка
+    public void removeUser(String sessionId) {
+        map.remove(sessionId);
     }
 }
